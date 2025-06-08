@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule provides a high-level overview of the Supabase database schema for LIA Banken, including core tables and relationships between users, programs, terms, applications, and matches.
+
+```
+# Supabase Schema Overview
+
+## Core Tables
+- `users`: Registered users with role, email, password (auth-managed).
+- `students`: Links users to their school, program, term.
+- `schools`: Contains school metadata and allowed email domains.
+- `companies`: Employer profiles and handledare contact info.
+- `education_programs`: Programs managed by schools.
+- `education_terms`: Termin info (start/end dates, program link).
+- `lia_posts`: Internship offers created by employers.
+- `lia_applications`: Links students to lia_posts with status (Sent, Interview, Accepted, Rejected).
+- `lia_matches`: Tracks accepted offers to mark a student as "placed".
+
+## Relationships
+- `students.school_id` → `schools.id`
+- `students.program_id` → `education_programs.id`
+- `education_programs.school_id` → `schools.id`
+- `education_terms.program_id` → `education_programs.id`
+- `lia_posts.company_id` → `companies.id`
+- `lia_applications.student_id` → `students.id`
+- `lia_applications.lia_post_id` → `lia_posts.id`
+- `lia_matches.application_id` → `lia_applications.id`
+
+## Policies
+- Row Level Security (RLS) should enforce ownership on all entities.
+- Example: Students can only see or edit their own records; schools only see their own students.
+```

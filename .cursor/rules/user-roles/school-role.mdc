@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines the abilities and responsibilities of the school role in the LIA Banken system, including program and term management, LIA period setup, and access to student statistics.
+
+```
+# School Role Rules
+
+## Registration
+- Registers via the registry form with school details and a custom email domain.
+- Must confirm email before accessing their dashboard.
+
+## Dashboard Access
+- Dashboard located at `/dashboard/school`
+- Shows future analytics and current program overview (TBD).
+
+## School Profile
+- Can update school logo, description, and website link.
+- Can manage allowed student email domains.
+
+## Education Program Management
+- Can create, update, and delete education programs.
+- Fields include: name, code, category (from admin list), description, website, study pace, study format, location (city & country).
+
+## Term (Termin) & LIA Periods
+- Can define one or more terms per program.
+- Can assign a start and end date, and expected student count for each LIA period.
+- Can publish or archive each LIA period.
+
+## Student Insights
+- Can view students registered to each program and term.
+- Can monitor which students have found placements, who are still looking, and how many applications they submitted.
+- Access limited to students registered under their own school only.
+```

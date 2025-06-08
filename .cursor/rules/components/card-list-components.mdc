@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule provides standards for building reusable list and card UI components that display dynamic data like students, LIA postings, or applications.
+
+```
+# Card & List Components Guidelines
+
+## Purpose
+- Used to render search results, recent items, listings, and summarized records.
+
+## Common Elements
+- Each card should include a title, metadata (e.g. dates, status), short description, and optional actions.
+- Use shadcn/ui components: `Card`, `CardHeader`, `CardContent`, `Badge`, `Button`, etc.
+
+## Layout
+- Use responsive grid or flexbox layouts.
+- Support list or grid display toggle (if applicable).
+
+## Interactivity
+- Cards may contain buttons or links for actions like Edit, View, Apply, Invite.
+- Clicking a card can navigate to a detail page or open a modal.
+
+## Reusability
+- Make card components role-agnostic where possible (e.g. `<StudentCard>`, `<LiaPostCard>`).
+- Accept props like `data`, `onClick`, and `variant` for styling.
+```

@@ -1,0 +1,39 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule outlines the features and sections of the employer dashboard in LIA Banken, including how internship listings and applications are managed.
+
+```
+# Employer Dashboard Guidelines
+
+## Location
+- The employer dashboard is located at `/dashboard/foretag`
+
+## Sections
+1. **Company Profile**
+   - Update company logo, name, org number, address, phone, description, website, LinkedIn
+
+2. **Handledare Management**
+   - Add/edit company supervisor info (name, email, phone)
+
+3. **LIA Listings**
+   - Create, edit, archive LIA offers
+   - Fields: title, category (admin-controlled), city, address, detailed description
+
+4. **Applications Management**
+   - View incoming applications
+   - Respond with: Reject / Interview / Accept
+   - Move accepted students to "Placed" status
+
+5. **Student Engagement**
+   - Search and view student LIA profiles
+   - Send direct invitations
+   - Mark students as favorites
+
+## Behavior
+- Employers can only manage their own listings and received applications.
+- Only one student per listing may be marked as "placed."
+- Confirmed matches are visible to both student and school.
+```

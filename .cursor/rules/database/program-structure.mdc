@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines the structure of education-related tables (`education_programs`, `education_terms`, and `program_categories`) in LIA Banken and how they relate to schools and students.
+
+```
+# Program Structure Tables
+
+## education_programs
+- Represents each unique educational track created by a school.
+- Fields:
+  - `id`: UUID (PK)
+  - `school_id`: FK to schools
+  - `name`: string
+  - `code`: string (e.g., program code)
+  - `category_id`: FK to program_categories
+  - `description`: text
+  - `website`: URL
+  - `studietakt`: enum (e.g. 100%, 75%, 50%)
+  - `studieform`: enum (e.g. plats, distance, flex)
+  - `city`, `country`: string
+  - `created_at`, `updated_at`
+
+## education_terms
+- Represents specific periods (e.g., 2023–2025) within a program.
+- Fields:
+  - `id`: UUID (PK)
+  - `program_id`: FK to education_programs
+  - `label`: string (e.g. "2023–2025")
+  - `start_date`, `end_date`: date
+  - `student_capacity`: int
+  - `archived`: boolean
+
+## program_categories
+- Central list managed by superadmin.
+- Fields:
+  - `id`: UUID (PK)
+  - `name`: string (e.g. IT, Healthcare, Economics)
+
+## Relationships
+- Programs belong to a school.
+- Terms belong to a program.
+- Students are linked to a program and a term during registration.
+- Category values are selected from a centralized admin-controlled list.
+
+## Security
+- Schools can only manage their own programs and terms.
+- Students can only select from active programs/terms during registration.
+```

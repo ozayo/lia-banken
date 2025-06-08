@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines how form components should be implemented using shadcn/ui, react-hook-form, and zod within the LIA Banken project.
+
+```
+# Form Components Guidelines
+
+## Technologies
+- Use `react-hook-form` to manage form state.
+- Use `zod` for schema-based validation.
+- UI elements must be built with shadcn/ui components: `Input`, `Select`, `Textarea`, `Checkbox`, `Button`, `Label`, etc.
+
+## Structure
+- Each form component should be modular and reusable.
+- Validation errors must be shown inline below the respective field.
+- Submit buttons must indicate loading state.
+- Optional fields should be clearly labeled.
+
+## Layout
+- Use TailwindCSS for spacing and layout.
+- Align labels and inputs using flex or grid where needed.
+- Forms should be responsive on mobile and desktop.
+
+## Accessibility
+- Use proper `aria-*` attributes for accessibility.
+- Label elements must be properly associated with inputs via `htmlFor` and `id`.
+
+## UX
+- Display toast notifications or feedback on success/error using a consistent method (e.g. shadcn/toast).
+- Form submission should be disabled until all required fields are valid.
+```

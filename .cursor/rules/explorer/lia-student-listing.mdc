@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines how the public student list page works, allowing users to view and filter students who have published their LIA profiles.
+
+```
+# LIA Student Listing Rules
+
+## URL
+- `/lia-students`
+
+## Functionality
+- Public list of students who published their LIA profiles.
+- Filters:
+  - Program category
+  - School
+  - City
+  - Term
+  - Keyword search (position/title)
+
+## Display
+- Uses grid or list view of `<StudentCard>`.
+- Each card shows name, position title, school, and program.
+
+## Security
+- Only published profiles are shown.
+- No private data (email, phone) is revealed unless explicitly permitted.
+```

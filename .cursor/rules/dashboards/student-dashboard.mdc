@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule outlines the layout, key sections, and functionalities available in the student dashboard module of LIA Banken.
+
+```
+# Student Dashboard Guidelines
+
+## Location
+- The student dashboard is located at `/dashboard/student`
+
+## Sections
+1. **Dashboard Home**
+   - Initially empty, designed for future widgets and statistics.
+
+2. **My Account**
+   - Displays student's name, school, program, term, internship start/end date.
+   - Allows editing of name, phone number, and city.
+
+3. **My LIA Profile**
+   - Allows creation/editing of cover letter, CV (PDF), external links, and target position.
+   - Includes save and publish actions.
+
+4. **Application Status**
+   - Lists applications made by the student with status tags: Sent, Rejected, In Process, Accepted.
+   - Lists received employer invitations, interview requests, and direct offers.
+   - Offers "Confirm Placement" button for accepted offers.
+
+## Behavior
+- Students can only have one active accepted placement per LIA period.
+- Status changes (e.g. Confirmed Placement) must reflect across school and employer dashboards.
+```

@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**Description:** This rule provides a high-level summary of the project LIA Banken, including its purpose, core features, user roles, and selected tech stack. This context helps the AI generate accurate, consistent, and aligned code and logic.
+
+```
+# Project Overview – LIA Banken
+
+## Purpose:
+LIA Banken is a web platform that connects students seeking internships with schools and companies. It facilitates internship applications, employer invitations, and school management of educational programs and periods.
+
+## Core Features:
+- Students register using their school-assigned email domains.
+- Schools manage education programs and LIA periods.
+- Employers create LIA posts, browse student profiles, and send invitations.
+- Supabase is used for authentication, database, and storage.
+- Each user type has a dedicated, modular dashboard under `/dashboard/*`.
+
+## User Types:
+- `student`: Can register, create a LIA profile, apply to posts, and respond to invitations.
+- `school`: Can define programs, terms, and monitor student participation.
+- `employer`: Can post LIA offers and manage applications and matched students.
+- `superadmin`: (optional) Manages categories, city lists, and system-wide data.
+
+## Tech Stack:
+- **Frontend:** Next.js (App Router), TypeScript, TailwindCSS, shadcn/ui
+- **Forms:** react-hook-form + zod
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, RLS, Realtime)
+- **API Access:** @supabase/supabase-js
+- **Deployment:** Vercel
+- **Language:** UI in Swedish, code/DB in English
+```

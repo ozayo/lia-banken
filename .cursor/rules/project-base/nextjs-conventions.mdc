@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+**Description:** This rule set guides the AI in adhering to Next.js best practices, file conventions, and common patterns for modular and scalable applications.
+
+```
+# Next.js Conventions
+
+- App Router (not Pages Router) is used across the project.
+- Each main route uses its own `layout.tsx` to encapsulate its UI logic.
+- Pages follow folder-based routing: e.g. `/dashboard/student/profile/page.tsx`.
+- Server Components are preferred by default. Use Client Components only when needed (e.g., stateful logic, interactivity).
+- Route folders are lowercase and kebab-case (e.g., `lia-students`, `lia-plats`).
+- Components use PascalCase for filenames (e.g., `StudentCard.tsx`).
+- UI state (e.g. modal open/close) is handled locally via `useState` or `useContext` — no global state lib is used.
+```

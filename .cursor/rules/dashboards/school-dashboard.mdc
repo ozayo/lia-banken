@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines the layout and feature set of the school dashboard in LIA Banken, including education program and term management, LIA tracking, and student insights.
+
+```
+# School Dashboard Guidelines
+
+## Location
+- The school dashboard is located at `/dashboard/school`
+
+## Sections
+1. **Dashboard Home**
+   - Reserved for future summary stats and visualizations.
+
+2. **Manage School Info**
+   - Logo upload/update
+   - School description (text area)
+   - School website
+   - Student email domain configuration
+
+3. **Education Programs**
+   - List, add, edit, delete education programs.
+   - Fields: name, code, category (admin-managed), description, website, pace, form, city, country
+
+4. **LIA Periods**
+   - List active and archived LIA terms
+   - Add new LIA:
+     - Select program
+     - Enter term (e.g. 2023–2025)
+     - Add start/end dates and total student count
+     - Save, publish or archive
+   - View stats: total students, registered, placed, applications sent
+   - View student list per LIA with status
+
+## Behavior
+- Schools can only manage their own data.
+- Program categories are selected from a system-wide list.
+- LIA assignments and stats are visible only within the scope of that school.
+```

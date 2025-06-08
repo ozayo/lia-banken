@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+**Description:** This rule defines the permissions and responsibilities of the employer (företag) role in the LIA Banken system, including listing creation, application handling, and student communication.
+
+```
+# Employer Role Rules
+
+## Registration
+- Registers using a company email and must create a password.
+- Must confirm email before accessing the dashboard.
+
+## Dashboard Access
+- Accessible only after email verification and successful login.
+- Located under `/dashboard/foretag`
+
+## Company Profile
+- Can update company name, logo, org number, address, phone number, website, and LinkedIn.
+- Can manage company contact person (handledare) info.
+
+## LIA Postings
+- Can create, update, and archive LIA internship offers.
+- Each listing includes: title, category (from admin list), city, address, description.
+
+## Application Management
+- Can view all incoming applications for their listings.
+- Can respond with: Reject / Start Interview / Accept.
+- Can mark an accepted student as "placed" for the associated LIA period.
+
+## Invitations & Favorites
+- Can search and browse published student profiles.
+- Can send direct invitations to students.
+- Can mark students as favorites for easier future access.
+```

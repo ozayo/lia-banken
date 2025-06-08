@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+**Description:** This rule defines how user registration is handled in LIA Banken, including user role selection, form structure per role, and validation steps such as domain checking for students.
+
+```
+# Registration Flow
+
+## Step 1: User Type Selection
+- The user must first select a user type: `Student`, `School`, or `Company`.
+
+## Step 2: Role-Specific Fields
+
+### Student
+- Fields:
+  - First name, last name
+  - Email (must match allowed domain of selected school)
+  - Password
+  - School (select from existing DB entries)
+  - Education program (auto-filtered by selected school)
+  - Term (auto-filtered by program)
+- Validation:
+  - Email domain must match the selected school's allowed domain
+  - All related data must exist in DB before student can register
+
+### School / Company
+- Fields:
+  - Name
+  - Email (freeform, no domain check)
+  - Password
+
+## Behavior
+- Supabase Auth handles account creation and email verification.
+- After confirmation, user is redirected to their dashboard based on role.
+- Role is stored in either `user_metadata.role` or a separate `profiles` table.
+
+## Security
+- Registration is public but email verification is required before login.
+- Email domain check for students must be enforced both client-side and server-side.
+```

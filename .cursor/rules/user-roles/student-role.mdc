@@ -1,0 +1,38 @@
+---
+description: This rule outlines the capabilities and restrictions of the student role in the LIA Banken system, including access permissions, dashboard functionality, and form validation logic.
+globs: 
+alwaysApply: false
+---
+**Description:** This rule outlines the capabilities and restrictions of the student role in the LIA Banken system, including access permissions, dashboard functionality, and form validation logic.
+
+```
+# Student Role Rules
+
+## Registration
+- Can register only using a verified school domain email.
+- Must select their school, education program, and education term (termin) during registration.
+- Must create a password and confirm email before accessing dashboard.
+
+## Dashboard Access
+- Accessible only after email verification and successful login.
+- Located under `/dashboard/student`
+
+## Account Features
+- Can view and update: name, phone number, city of residence.
+- Cannot edit: email, school, program, or term (read-only after registration).
+
+## LIA Profile
+- Can create/edit a LIA profile with:
+  - Cover letter
+  - CV upload (PDF)
+  - External links (portfolio, GitHub, etc.)
+  - Desired position title (e.g., Frontend Developer)
+- Can publish profile to be discoverable by companies.
+
+## Application Process
+- Can apply to LIA listings published by employers.
+- Can view status of applications: Sent, Rejected, In Process, Accepted.
+- Can receive direct offers or interview requests.
+- Can accept a single offer, which marks them as "placed" for that LIA term.
+- Matching status is visible to the company and the school.
+```
