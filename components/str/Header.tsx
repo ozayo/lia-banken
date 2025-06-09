@@ -14,7 +14,7 @@ export function Header() {
           <Link href={"/"}><Logo /></Link>
           <div className="flex items-center gap-2">
             <Link href={"/"}>Home</Link>
-            <Link href={"/protected"}>protected</Link>
+            <Link href={"/dashboard/school"}>School</Link>
           </div>
         </div>
         {!hasEnvVars ? <EnvVarWarning /> : <ClientAuthButton />}

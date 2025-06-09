@@ -38,8 +38,32 @@ export function LoginForm({
         password,
       });
       if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      
+      // Get user profile to determine redirect route
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        
+        // Redirect based on user role
+        if (profile?.role === "student") {
+          router.push("/dashboard/student");
+        } else if (profile?.role === "school") {
+          router.push("/dashboard/school");
+        } else if (profile?.role === "company") {
+          router.push("/dashboard/company");
+        } else if (profile?.role === "admin") {
+          router.push("/dashboard/admin");
+        } else {
+          // Fallback for users without profile
+          router.push("/");
+        }
+      } else {
+        router.push("/");
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {

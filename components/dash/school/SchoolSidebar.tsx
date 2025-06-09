@@ -1,0 +1,110 @@
+"use client"
+
+import * as React from "react"
+import {
+  BookOpen,
+  Building2,
+  Calendar,
+  GraduationCap,
+  LifeBuoy,
+  Settings2,
+  Users,
+  BarChart3,
+  Home,
+} from "lucide-react"
+
+import { NavMain } from "@/components/nav-main"
+import { NavSecondary } from "@/components/nav-secondary"
+import { NavUser } from "@/components/nav-user"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
+
+const data = {
+  user: {
+    name: "Okul Admin",
+    email: "admin@okul.se",
+    avatar: "/avatars/shadcn.jpg",
+  },
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard/school",
+      icon: Home,
+    },
+    {
+      title: "Eğitim Programları",
+      url: "/dashboard/school/programs",
+      icon: BookOpen,
+    },
+    {
+      title: "Dönemler",
+      url: "/dashboard/school/terms",
+      icon: Calendar,
+    },
+    {
+      title: "Öğrenciler",
+      url: "/dashboard/school/students",
+      icon: GraduationCap,
+    },
+    {
+      title: "İstatistikler",
+      url: "/dashboard/school/analytics",
+      icon: BarChart3,
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Okul Profili",
+      url: "/dashboard/school/profile",
+      icon: Building2,
+    },
+    {
+      title: "Ayarlar",
+      url: "/dashboard/school/settings",
+      icon: Settings2,
+    },
+    {
+      title: "Destek",
+      url: "#",
+      icon: LifeBuoy,
+    },
+  ],
+}
+
+export function SchoolSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  return (
+    <Sidebar variant="inset" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="/dashboard/school">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Building2 className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">LIA Banken</span>
+                  <span className="truncate text-xs">Okul Yönetimi</span>
+                </div>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+    </Sidebar>
+  )
+} 

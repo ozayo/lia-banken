@@ -41,7 +41,9 @@ export function ClientAuthButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      Hey, {user.email}! 
+      {/* Hello {user.user_metadata.first_name} {user.user_metadata.last_name}!
+      Hello {user.user_metadata.display_name}! */}
       <LogoutButton />
     </div>
   ) : (
