@@ -88,6 +88,22 @@ export function validateStudentEmailDomain(email: string, allowedDomains: string
   );
 }
 
+// Get schools administered by a specific user
+export async function getSchoolsByAdmin(adminId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('schools')
+    .select('*')
+    .eq('school_admin_id', adminId);
+
+  if (error) {
+    console.error('Error fetching schools by admin:', error);
+    return [];
+  }
+  
+  return data || [];
+}
+
 // Create user profile after successful registration
 export async function createUserProfile(userId: string, profileData: {
   role: 'student' | 'school' | 'company';

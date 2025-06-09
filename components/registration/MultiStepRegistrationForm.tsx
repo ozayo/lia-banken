@@ -46,9 +46,22 @@ const organizationFormSchema = z.object({
   website: z.string().optional().or(z.literal(""))
 });
 
+const schoolFormSchema = z.object({
+  // School admin personal info
+  firstName: z.string().min(2, "İsim en az 2 karakter olmalı"),
+  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalı"),
+  // School info  
+  schoolName: z.string().min(2, "Okul adı en az 2 karakter olmalı"),
+  email: z.string().email("Geçerli bir email adresi girin"),
+  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
+  phone: z.string().optional().or(z.literal("")),
+  website: z.string().optional().or(z.literal(""))
+});
+
 type UserTypeData = z.infer<typeof userTypeSchema>;
 type StudentFormData = z.infer<typeof studentFormSchema>;
 type OrganizationFormData = z.infer<typeof organizationFormSchema>;
+type SchoolFormData = z.infer<typeof schoolFormSchema>;
 
 export function MultiStepRegistrationForm() {
   const [currentStep, setCurrentStep] = useState<"userType" | "details">("userType");
@@ -82,11 +95,25 @@ export function MultiStepRegistrationForm() {
     }
   });
 
-  // Organization form
+  // Organization form (for companies)
   const organizationForm = useForm<OrganizationFormData>({
     resolver: zodResolver(organizationFormSchema),
     defaultValues: {
       name: "",
+      email: "",
+      password: "",
+      phone: "",
+      website: ""
+    }
+  });
+
+  // School form (for schools)
+  const schoolForm = useForm<SchoolFormData>({
+    resolver: zodResolver(schoolFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      schoolName: "",
       email: "",
       password: "",
       phone: "",
@@ -183,7 +210,44 @@ export function MultiStepRegistrationForm() {
     }
   };
 
-  // Handle organization registration
+  // Handle school registration
+  const handleSchoolSubmit = async (data: SchoolFormData) => {
+    setIsLoading(true);
+    try {
+      const supabase = createClient();
+      
+      // Create auth user with metadata
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            role: 'school',
+            first_name: data.firstName,
+            last_name: data.lastName,
+            school_name: data.schoolName,
+            phone: data.phone,
+            website: data.website,
+            display_name: `${data.firstName} ${data.lastName}`
+          }
+        }
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("User creation failed");
+
+      alert("Kayıt başarılı! Email adresinizi kontrol edip doğrulama linkine tıklayın.");
+      router.push("/auth/login");
+      
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      alert("Kayıt sırasında hata oluştu: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle organization registration (companies)
   const handleOrganizationSubmit = async (data: OrganizationFormData) => {
     setIsLoading(true);
     try {
@@ -195,7 +259,7 @@ export function MultiStepRegistrationForm() {
         password: data.password,
         options: {
           data: {
-            role: selectedUserType,
+            role: 'company',
             name: data.name,
             phone: data.phone,
             website: data.website
@@ -423,20 +487,139 @@ export function MultiStepRegistrationForm() {
             </Form>
           )}
 
-          {currentStep === "details" && (selectedUserType === "school" || selectedUserType === "company") && (
+          {currentStep === "details" && selectedUserType === "school" && (
+            <Form {...schoolForm}>
+              <form onSubmit={schoolForm.handleSubmit(handleSchoolSubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={schoolForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>İsim</FormLabel>
+                        <FormControl>
+                          <Input placeholder="İsminiz" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={schoolForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Soyisim</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Soyisminiz" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={schoolForm.control}
+                  name="schoolName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Okul Adı</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Okul adınız" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={schoolForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="email@okul.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={schoolForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Şifre</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={schoolForm.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telefon (Opsiyonel)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+90 555 123 45 67" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={schoolForm.control}
+                  name="website"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Website (Opsiyonel)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://okul.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setCurrentStep("userType")}
+                    className="flex-1"
+                  >
+                    Geri
+                  </Button>
+                  <Button type="submit" disabled={isLoading} className="flex-1">
+                    {isLoading ? "Kaydediliyor..." : "Kayıt Ol"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          )}
+
+          {currentStep === "details" && selectedUserType === "company" && (
             <Form {...organizationForm}>
               <form onSubmit={organizationForm.handleSubmit(handleOrganizationSubmit)} className="space-y-4">
                 <FormField
                   control={organizationForm.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{selectedUserType === "school" ? "Okul Adı" : "Şirket Adı"}</FormLabel>
-                      <FormControl>
-                        <Input placeholder={selectedUserType === "school" ? "Okul adınız" : "Şirket adınız"} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                                         <FormItem>
+                       <FormLabel>Şirket Adı</FormLabel>
+                       <FormControl>
+                         <Input placeholder="Şirket adınız" {...field} />
+                       </FormControl>
+                       <FormMessage />
+                     </FormItem>
                   )}
                 />
 
