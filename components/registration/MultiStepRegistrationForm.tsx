@@ -41,9 +41,7 @@ const studentFormSchema = z.object({
 const organizationFormSchema = z.object({
   name: z.string().min(2, "İsim en az 2 karakter olmalı"),
   email: z.string().email("Geçerli bir email adresi girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
-  phone: z.string().optional().or(z.literal("")),
-  website: z.string().optional().or(z.literal(""))
+  password: z.string().min(6, "Şifre en az 6 karakter olmalı")
 });
 
 const schoolFormSchema = z.object({
@@ -53,9 +51,7 @@ const schoolFormSchema = z.object({
   // School info  
   schoolName: z.string().min(2, "Okul adı en az 2 karakter olmalı"),
   email: z.string().email("Geçerli bir email adresi girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
-  phone: z.string().optional().or(z.literal("")),
-  website: z.string().optional().or(z.literal(""))
+  password: z.string().min(6, "Şifre en az 6 karakter olmalı")
 });
 
 type UserTypeData = z.infer<typeof userTypeSchema>;
@@ -101,9 +97,7 @@ export function MultiStepRegistrationForm() {
     defaultValues: {
       name: "",
       email: "",
-      password: "",
-      phone: "",
-      website: ""
+      password: ""
     }
   });
 
@@ -115,9 +109,7 @@ export function MultiStepRegistrationForm() {
       lastName: "",
       schoolName: "",
       email: "",
-      password: "",
-      phone: "",
-      website: ""
+      password: ""
     }
   });
 
@@ -226,8 +218,6 @@ export function MultiStepRegistrationForm() {
             first_name: data.firstName,
             last_name: data.lastName,
             school_name: data.schoolName,
-            phone: data.phone,
-            website: data.website,
             display_name: `${data.firstName} ${data.lastName}`
           }
         }
@@ -260,9 +250,7 @@ export function MultiStepRegistrationForm() {
         options: {
           data: {
             role: 'company',
-            name: data.name,
-            phone: data.phone,
-            website: data.website
+            name: data.name
           }
         }
       });
@@ -490,6 +478,20 @@ export function MultiStepRegistrationForm() {
           {currentStep === "details" && selectedUserType === "school" && (
             <Form {...schoolForm}>
               <form onSubmit={schoolForm.handleSubmit(handleSchoolSubmit)} className="space-y-4">
+                <FormField
+                  control={schoolForm.control}
+                  name="schoolName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Okul Adı</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Okul adınız" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={schoolForm.control}
@@ -521,20 +523,6 @@ export function MultiStepRegistrationForm() {
 
                 <FormField
                   control={schoolForm.control}
-                  name="schoolName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Okul Adı</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Okul adınız" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={schoolForm.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -555,34 +543,6 @@ export function MultiStepRegistrationForm() {
                       <FormLabel>Şifre</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={schoolForm.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefon (Opsiyonel)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="+90 555 123 45 67" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={schoolForm.control}
-                  name="website"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Website (Opsiyonel)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://okul.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -651,33 +611,7 @@ export function MultiStepRegistrationForm() {
                   )}
                 />
 
-                <FormField
-                  control={organizationForm.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefon (Opsiyonel)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="+90 555 123 45 67" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                <FormField
-                  control={organizationForm.control}
-                  name="website"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Website (Opsiyonel)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://ornek.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 <div className="flex gap-2">
                   <Button 

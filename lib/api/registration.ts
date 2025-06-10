@@ -4,7 +4,7 @@ export interface School {
   id: string;
   name: string;
   allowed_domains: string[];
-  website?: string;
+  website_url?: string;
   contact_email?: string;
 }
 
@@ -32,7 +32,7 @@ export async function getSchools(): Promise<School[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from('schools')
-    .select('id, name, allowed_domains, website, contact_email')
+    .select('id, name, allowed_domains, website_url, contact_email')
     .order('name');
 
   if (error) {
@@ -113,8 +113,6 @@ export async function createUserProfile(userId: string, profileData: {
   school_id?: string;
   program_id?: string;
   term_id?: string;
-  phone?: string;
-  website?: string;
 }) {
   const supabase = createClient();
   const { data, error } = await supabase

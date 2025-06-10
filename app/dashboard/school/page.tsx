@@ -24,7 +24,7 @@ export default async function SchoolDashboardPage() {
   // Check if user has school role and get profile
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, school_id")
+    .select("role, school_id, first_name, last_name, phone")
     .eq("id", user.id)
     .single()
 
@@ -41,9 +41,16 @@ export default async function SchoolDashboardPage() {
     redirect("/auth/login")
   }
 
+  // Prepare user data for sidebar
+  const sidebarUser = {
+    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    email: user.email!, // We know email exists since user is authenticated
+    avatar: user.user_metadata?.avatar_url
+  }
+
   return (
     <SidebarProvider>
-      <SchoolSidebar variant="inset" />
+      <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
         <SchoolHeader />
         <div className="flex flex-1 flex-col">

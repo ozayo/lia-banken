@@ -26,59 +26,68 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "Okul Admin",
-    email: "admin@okul.se",
-    avatar: "/avatars/shadcn.jpg",
+const navMainItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard/school",
+    icon: Home,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard/school",
-      icon: Home,
-    },
-    {
-      title: "Eğitim Programları",
-      url: "/dashboard/school/programs",
-      icon: BookOpen,
-    },
-    {
-      title: "Dönemler",
-      url: "/dashboard/school/terms",
-      icon: Calendar,
-    },
-    {
-      title: "Öğrenciler",
-      url: "/dashboard/school/students",
-      icon: GraduationCap,
-    },
-    {
-      title: "İstatistikler",
-      url: "/dashboard/school/analytics",
-      icon: BarChart3,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Okul Profili",
-      url: "/dashboard/school/profile",
-      icon: Building2,
-    },
-    {
-      title: "Ayarlar",
-      url: "/dashboard/school/settings",
-      icon: Settings2,
-    },
-    {
-      title: "Destek",
-      url: "#",
-      icon: LifeBuoy,
-    },
-  ],
+  {
+    title: "Eğitim Programları",
+    url: "/dashboard/school/programs",
+    icon: BookOpen,
+  },
+  {
+    title: "Dönemler",
+    url: "/dashboard/school/terms",
+    icon: Calendar,
+  },
+  {
+    title: "Öğrenciler",
+    url: "/dashboard/school/students",
+    icon: GraduationCap,
+  },
+  {
+    title: "İstatistikler",
+    url: "/dashboard/school/analytics",
+    icon: BarChart3,
+  },
+]
+
+const navSecondaryItems = [
+  {
+    title: "Okul Profili",
+    url: "/dashboard/school/profile",
+    icon: Building2,
+  },
+  {
+    title: "Ayarlar",
+    url: "/dashboard/school/settings",
+    icon: Settings2,
+  },
+  {
+    title: "Destek",
+    url: "#",
+    icon: LifeBuoy,
+  },
+]
+
+interface SchoolSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user: {
+    name: string
+    email: string
+    avatar?: string
+  }
 }
 
-export function SchoolSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SchoolSidebar({ user, ...props }: SchoolSidebarProps) {
+  // Create user data for NavUser
+  const userData = {
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar || "/avatars/default.jpg", // fallback avatar
+  }
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -99,11 +108,11 @@ export function SchoolSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMainItems} />
+        <NavSecondary items={navSecondaryItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   )

@@ -7,6 +7,9 @@ import {
   MoreVerticalIcon,
   UserCircleIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 
 import {
   Avatar,
@@ -39,6 +42,13 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/auth/login")
+  }
 
   return (
     <SidebarMenu>
@@ -84,21 +94,27 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <UserCircleIcon />
-                Account
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/school/account">
+                  <UserCircleIcon />
+                  Account
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/school/billing">
+                  <CreditCardIcon />
+                  Billing
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/school/notifications">
+                  <BellIcon />
+                  Notifications
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>
