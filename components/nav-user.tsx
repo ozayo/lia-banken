@@ -50,7 +50,12 @@ export function NavUser({
     ? "company" 
     : pathname.startsWith("/dashboard/school") 
     ? "school" 
+    : pathname.startsWith("/dashboard/student")
+    ? "student"
     : "school" // default fallback
+
+  // Check if current dashboard is student (no billing/notifications)
+  const isStudentDashboard = dashboardType === "student"
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -108,18 +113,22 @@ export function NavUser({
                   Account
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={`/dashboard/${dashboardType}/billing`}>
-                  <CreditCardIcon />
-                  Billing
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={`/dashboard/${dashboardType}/notifications`}>
-                  <BellIcon />
-                  Notifications
-                </Link>
-              </DropdownMenuItem>
+              {!isStudentDashboard && (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/dashboard/${dashboardType}/billing`}>
+                      <CreditCardIcon />
+                      Billing
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/dashboard/${dashboardType}/notifications`}>
+                      <BellIcon />
+                      Notifications
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
