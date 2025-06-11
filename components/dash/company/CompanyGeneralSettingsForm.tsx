@@ -17,7 +17,6 @@ interface CompanyGeneralSettingsFormProps {
     id: string; 
     name: string; 
     school_id: string;
-    schools: { name: string }
   }>
   currentCategories: string[]
   currentSchools: string[]
@@ -132,7 +131,7 @@ export function CompanyGeneralSettingsForm({
         // Check for errors
         const errors = results.filter(result => result.error)
         if (errors.length > 0) {
-          throw new Error(errors[0].error.message)
+          throw new Error(errors[0].error?.message || 'An error occurred')
         }
       }
 

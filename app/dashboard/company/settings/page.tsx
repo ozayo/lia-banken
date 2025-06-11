@@ -67,12 +67,7 @@ export default async function CompanySettingsPage() {
   // Get all education programs  
   const { data: educationPrograms } = await supabase
     .from("education_programs")
-    .select(`
-      id, 
-      name, 
-      school_id,
-      schools!inner(name)
-    `)
+    .select("id, name, school_id")
     .order("name")
 
   // Get company's current settings
