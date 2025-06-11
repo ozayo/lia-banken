@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 
 import {
@@ -43,6 +43,14 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
+  const pathname = usePathname()
+
+  // Determine dashboard type from pathname
+  const dashboardType = pathname.startsWith("/dashboard/company") 
+    ? "company" 
+    : pathname.startsWith("/dashboard/school") 
+    ? "school" 
+    : "school" // default fallback
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -95,19 +103,19 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/school/account">
+                <Link href={`/dashboard/${dashboardType}/account`}>
                   <UserCircleIcon />
                   Account
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/school/billing">
+                <Link href={`/dashboard/${dashboardType}/billing`}>
                   <CreditCardIcon />
                   Billing
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/school/notifications">
+                <Link href={`/dashboard/${dashboardType}/notifications`}>
                   <BellIcon />
                   Notifications
                 </Link>

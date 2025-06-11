@@ -124,9 +124,57 @@ export interface Profile {
   school_id?: string
   program_id?: string
   lia_id?: string // Updated: now references lias table instead of education_terms
+  company_id?: string // References companies table for company admins
   phone?: string
   website?: string
   avatar_url?: string
+  created_at: string
+  updated_at: string
+}
+
+// Company Types
+export interface Company {
+  id: string
+  name: string
+  company_admin_id: string // auth.users.id
+  
+  // Company Profile
+  logo_url?: string
+  description?: string
+  organization_number?: string
+  
+  // Contact Information
+  contact_phone?: string
+  website_url?: string
+  linkedin_url?: string
+  
+  // Address Information
+  address_street?: string
+  address_postal_code?: string
+  address_county_id?: number
+  address_municipality_id?: number
+  
+  // Timestamps
+  created_at: string
+  updated_at: string
+}
+
+// Company Contact Types (Handledare - Responsible Persons)
+export interface CompanyContact {
+  id: string
+  company_id: string
+  
+  // Contact Information
+  first_name: string
+  last_name: string
+  email: string
+  phone?: string
+  
+  // Role/Position
+  title?: string
+  is_primary: boolean
+  
+  // Timestamps
   created_at: string
   updated_at: string
 } 

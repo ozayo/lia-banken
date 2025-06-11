@@ -39,7 +39,9 @@ const studentFormSchema = z.object({
 });
 
 const organizationFormSchema = z.object({
-  name: z.string().min(2, "İsim en az 2 karakter olmalı"),
+  companyName: z.string().min(2, "Şirket adı en az 2 karakter olmalı"),
+  firstName: z.string().min(2, "İsim en az 2 karakter olmalı"),
+  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalı"),
   email: z.string().email("Geçerli bir email adresi girin"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı")
 });
@@ -95,7 +97,9 @@ export function MultiStepRegistrationForm() {
   const organizationForm = useForm<OrganizationFormData>({
     resolver: zodResolver(organizationFormSchema),
     defaultValues: {
-      name: "",
+      companyName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: ""
     }
@@ -250,7 +254,9 @@ export function MultiStepRegistrationForm() {
         options: {
           data: {
             role: 'company',
-            name: data.name
+            company_name: data.companyName,
+            first_name: data.firstName,
+            last_name: data.lastName
           }
         }
       });
@@ -571,7 +577,7 @@ export function MultiStepRegistrationForm() {
               <form onSubmit={organizationForm.handleSubmit(handleOrganizationSubmit)} className="space-y-4">
                 <FormField
                   control={organizationForm.control}
-                  name="name"
+                  name="companyName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Şirket Adı</FormLabel>
@@ -582,6 +588,35 @@ export function MultiStepRegistrationForm() {
                     </FormItem>
                   )}
                 />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={organizationForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>İsim</FormLabel>
+                        <FormControl>
+                          <Input placeholder="İsminiz" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={organizationForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Soyisim</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Soyisminiz" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={organizationForm.control}
