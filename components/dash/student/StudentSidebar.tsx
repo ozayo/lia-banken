@@ -36,7 +36,7 @@ const navMainItems = [
     icon: User,
   },
   {
-    title: "Find LIA",
+    title: "Find Internships",
     url: "/dashboard/student/job-post-list",
     icon: Search,
   },
