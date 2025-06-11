@@ -67,7 +67,7 @@ const navSecondaryItems = [
   },
   {
     title: "Ayarlar",
-    url: "/dashboard/company/account",
+    url: "/dashboard/company/settings",
     icon: Settings2,
   },
   {

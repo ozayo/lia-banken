@@ -1,0 +1,347 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { toast } from "sonner"
+
+interface County {
+  id: number
+  name: string
+  code: string
+}
+
+interface Municipality {
+  id: number
+  name: string
+  code: string
+  county_id: number
+}
+
+interface Company {
+  id: string
+  name: string
+  logo_url?: string
+  description?: string
+  website_url?: string
+  linkedin_url?: string
+  contact_phone?: string
+  organization_number?: string
+  address_street?: string
+  address_postal_code?: string
+  address_county_id?: number
+  address_municipality_id?: number
+  address_county?: County
+  address_municipality?: Municipality
+}
+
+interface CompanyProfileFormProps {
+  company: Company
+  counties: County[]
+  municipalities: Municipality[]
+}
+
+export function CompanyProfileForm({ company, counties, municipalities }: CompanyProfileFormProps) {
+  const [name, setName] = useState(company.name || "")
+  const [description, setDescription] = useState(company.description || "")
+  const [websiteUrl, setWebsiteUrl] = useState(company.website_url || "")
+  const [linkedinUrl, setLinkedinUrl] = useState(company.linkedin_url || "")
+  const [contactPhone, setContactPhone] = useState(company.contact_phone || "")
+  const [organizationNumber, setOrganizationNumber] = useState(company.organization_number || "")
+  const [addressStreet, setAddressStreet] = useState(company.address_street || "")
+  const [addressPostalCode, setAddressPostalCode] = useState(company.address_postal_code || "")
+  const [selectedCountyId, setSelectedCountyId] = useState<string>(company.address_county_id?.toString() || "")
+  const [selectedMunicipalityId, setSelectedMunicipalityId] = useState<string>(company.address_municipality_id?.toString() || "")
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const router = useRouter()
+
+  // Filter municipalities based on selected county
+  const filteredMunicipalities = municipalities.filter(
+    m => selectedCountyId ? m.county_id.toString() === selectedCountyId : true
+  )
+
+  // Reset municipality when county changes
+  useEffect(() => {
+    if (selectedCountyId && company.address_municipality?.county_id && 
+        company.address_municipality.county_id.toString() !== selectedCountyId) {
+      setSelectedMunicipalityId("")
+    }
+  }, [selectedCountyId, company.address_municipality?.county_id])
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const supabase = createClient()
+      
+      const updateData: any = {
+        name,
+        description,
+        website_url: websiteUrl,
+        linkedin_url: linkedinUrl,
+        contact_phone: contactPhone,
+        organization_number: organizationNumber,
+        address_street: addressStreet,
+        address_postal_code: addressPostalCode,
+      }
+
+      // Add county/municipality if selected
+      if (selectedCountyId) {
+        updateData.address_county_id = parseInt(selectedCountyId)
+      }
+      if (selectedMunicipalityId) {
+        updateData.address_municipality_id = parseInt(selectedMunicipalityId)
+      }
+
+      const { error } = await supabase
+        .from("companies")
+        .update(updateData)
+        .eq("id", company.id)
+
+      if (error) throw error
+
+      toast.success("Company profile updated successfully")
+      
+      router.refresh()
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred while updating profile")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      toast.error("File size must be less than 2MB")
+      return
+    }
+
+    try {
+      const supabase = createClient()
+      
+      // Get current user for auth
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error("User session not found")
+      
+      // Upload file to user's folder (to avoid RLS issues)
+      const fileExt = file.name.split('.').pop()
+      const fileName = `company-logo-${Date.now()}.${fileExt}`
+      const filePath = `${user.id}/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          upsert: true
+        })
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      // Update company logo
+      const { error: updateError } = await supabase
+        .from("companies")
+        .update({ logo_url: data.publicUrl })
+        .eq("id", company.id)
+
+      if (updateError) throw updateError
+
+      toast.success("Company logo updated successfully")
+      
+      router.refresh()
+    } catch (error: any) {
+      console.error("Logo upload error:", error)
+      toast.error(error.message || "An error occurred while uploading logo")
+    }
+  }
+
+  return (
+    <form onSubmit={handleProfileUpdate} className="grid gap-6">
+      {/* Company Logo */}
+      <div className="flex items-center gap-4">
+        <Avatar className="h-20 w-20">
+          <AvatarImage src={company.logo_url} alt={company.name} />
+          <AvatarFallback className="text-lg">
+            {company.name.substring(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div>
+          <Label htmlFor="logo" className="cursor-pointer">
+            <Button variant="outline" asChild>
+              <span>Change Logo</span>
+            </Button>
+            <Input
+              id="logo"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleLogoUpload}
+            />
+          </Label>
+          <p className="text-sm text-muted-foreground mt-1">
+            JPG, PNG or GIF. Maximum 2MB.
+          </p>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Basic Information */}
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="name">Company Name</Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter company name"
+            required
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="description">Company Description</Label>
+          <Textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Write a short description about your company..."
+            rows={4}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="website">Website</Label>
+            <Input
+              id="website"
+              type="url"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              placeholder="https://company.com"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="org-number">Organization Number</Label>
+            <Input
+              id="org-number"
+              value={organizationNumber}
+              onChange={(e) => setOrganizationNumber(e.target.value)}
+              placeholder="123456-7890"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="linkedin">LinkedIn URL</Label>
+            <Input
+              id="linkedin"
+              type="url"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+              placeholder="https://linkedin.com/company/yourcompany"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="contact-phone">Phone Number</Label>
+            <Input
+              id="contact-phone"
+              type="tel"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              placeholder="+46 8 123 456 78"
+            />
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Address */}
+      <div className="grid gap-4">
+        <h3 className="text-lg font-medium">Address Information</h3>
+        
+        <div className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="address-street">Street Address</Label>
+            <Input
+              id="address-street"
+              value={addressStreet}
+              onChange={(e) => setAddressStreet(e.target.value)}
+              placeholder="Arenavägen 61"
+            />
+          </div>
+          
+          <div className="grid gap-2">
+            <Label htmlFor="postal-code">Postal Code</Label>
+            <Input
+              id="postal-code"
+              value={addressPostalCode}
+              onChange={(e) => setAddressPostalCode(e.target.value)}
+              placeholder="121 77"
+              maxLength={10}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="county">County (Län)</Label>
+              <Select value={selectedCountyId} onValueChange={setSelectedCountyId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select county" />
+                </SelectTrigger>
+                <SelectContent>
+                  {counties.map((county) => (
+                    <SelectItem key={county.id} value={county.id.toString()}>
+                      {county.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="municipality">Municipality (Kommun)</Label>
+              <Select 
+                value={selectedMunicipalityId} 
+                onValueChange={setSelectedMunicipalityId}
+                disabled={!selectedCountyId}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={selectedCountyId ? "Select municipality" : "Select county first"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredMunicipalities.map((municipality) => (
+                    <SelectItem key={municipality.id} value={municipality.id.toString()}>
+                      {municipality.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Button type="submit" disabled={isLoading} className="w-fit">
+        {isLoading ? "Updating..." : "Update Profile"}
+      </Button>
+    </form>
+  )
+} 

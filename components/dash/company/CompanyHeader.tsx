@@ -2,15 +2,21 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
-interface CompanyHeaderProps {
-  user: any
-  profile: any
-  company: {
-    name: string
-  }
+interface BreadcrumbItem {
+  label: string
+  href?: string
 }
 
-export function CompanyHeader({ user, profile, company }: CompanyHeaderProps) {
+interface CompanyHeaderProps {
+  user?: any
+  profile?: any
+  company?: {
+    name: string
+  }
+  breadcrumbs?: BreadcrumbItem[]
+}
+
+export function CompanyHeader({ user, profile, company, breadcrumbs = [] }: CompanyHeaderProps) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 px-4">
@@ -20,13 +26,31 @@ export function CompanyHeader({ user, profile, company }: CompanyHeaderProps) {
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
               <BreadcrumbLink href="/dashboard/company">
-                {company.name}
+                {company?.name || "Company Dashboard"}
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Dashboard</BreadcrumbPage>
-            </BreadcrumbItem>
+            {breadcrumbs.map((breadcrumb, index) => (
+              <div key={index} className="flex items-center">
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  {breadcrumb.href ? (
+                    <BreadcrumbLink href={breadcrumb.href}>
+                      {breadcrumb.label}
+                    </BreadcrumbLink>
+                  ) : (
+                    <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              </div>
+            ))}
+            {breadcrumbs.length === 0 && (
+              <>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
