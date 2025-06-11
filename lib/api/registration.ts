@@ -16,15 +16,15 @@ export interface EducationProgram {
   duration_weeks?: number;
 }
 
-export interface EducationTerm {
+export interface ActiveLia {
   id: string;
-  program_id: string;
-  name: string;
-  start_date?: string;
-  end_date?: string;
-  lia_start_date?: string;
-  lia_end_date?: string;
-  is_active: boolean;
+  education_program_id: string;
+  education_term: string;
+  lia_code: string;
+  lia_start_date: string;
+  lia_end_date: string;
+  short_description?: string;
+  student_count: number;
 }
 
 // Get all schools
@@ -60,18 +60,18 @@ export async function getEducationPrograms(schoolId: string): Promise<EducationP
   return data || [];
 }
 
-// Get education terms by program
-export async function getEducationTerms(programId: string): Promise<EducationTerm[]> {
+// Get active LIAs by program
+export async function getActiveLias(programId: string): Promise<ActiveLia[]> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('education_terms')
-    .select('id, program_id, name, start_date, end_date, lia_start_date, lia_end_date, is_active')
-    .eq('program_id', programId)
-    .eq('is_active', true)
-    .order('start_date');
+    .from('lias')
+    .select('id, education_program_id, education_term, lia_code, lia_start_date, lia_end_date, short_description, student_count')
+    .eq('education_program_id', programId)
+    .eq('lia_status', 'active')
+    .order('lia_start_date');
 
   if (error) {
-    console.error('Error fetching education terms:', error);
+    console.error('Error fetching active LIAs:', error);
     return [];
   }
   
@@ -112,7 +112,7 @@ export async function createUserProfile(userId: string, profileData: {
   company_name?: string;
   school_id?: string;
   program_id?: string;
-  term_id?: string;
+  lia_id?: string;
 }) {
   const supabase = createClient();
   const { data, error } = await supabase

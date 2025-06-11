@@ -38,8 +38,13 @@ const navMainItems = [
     icon: BookOpen,
   },
   {
-    title: "Dönemler",
-    url: "/dashboard/school/terms",
+    title: "Aktif LIA'lar",
+    url: "/dashboard/school/active-lias",
+    icon: Users,
+  },
+  {
+    title: "Arşivlenmiş LIA'lar", 
+    url: "/dashboard/school/archived-lias",
     icon: Calendar,
   },
   {

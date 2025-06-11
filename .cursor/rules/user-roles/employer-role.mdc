@@ -14,7 +14,7 @@ alwaysApply: false
 
 ## Dashboard Access
 - Accessible only after email verification and successful login.
-- Located under `/dashboard/foretag`
+- Located under `/dashboard/company`
 
 ## Company Profile
 - Can update company name, logo, org number, address, phone number, website, and LinkedIn.

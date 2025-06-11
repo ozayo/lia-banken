@@ -14,12 +14,12 @@ import { createClient } from "@/lib/supabase/client";
 import { 
   getSchools, 
   getEducationPrograms, 
-  getEducationTerms, 
+  getActiveLias, 
   validateStudentEmailDomain,
   createUserProfile,
   type School,
   type EducationProgram,
-  type EducationTerm
+  type ActiveLia
 } from "@/lib/api/registration";
 import { useRouter } from "next/navigation";
 
@@ -35,7 +35,7 @@ const studentFormSchema = z.object({
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
   schoolId: z.string().min(1, "Okul seçimi zorunlu"),
   programId: z.string().min(1, "Program seçimi zorunlu"),
-  termId: z.string().min(1, "Dönem seçimi zorunlu")
+  liaId: z.string().min(1, "LIA seçimi zorunlu")
 });
 
 const organizationFormSchema = z.object({
@@ -65,7 +65,7 @@ export function MultiStepRegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [schools, setSchools] = useState<School[]>([]);
   const [programs, setPrograms] = useState<EducationProgram[]>([]);
-  const [terms, setTerms] = useState<EducationTerm[]>([]);
+  const [lias, setLias] = useState<ActiveLia[]>([]);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const router = useRouter();
 
@@ -87,7 +87,7 @@ export function MultiStepRegistrationForm() {
       password: "",
       schoolId: "",
       programId: "",
-      termId: ""
+      liaId: ""
     }
   });
 
@@ -136,19 +136,19 @@ export function MultiStepRegistrationForm() {
     if (school) {
       const programsData = await getEducationPrograms(schoolId);
       setPrograms(programsData);
-      setTerms([]);
+      setLias([]);
       // Reset form fields
       studentForm.setValue("programId", "");
-      studentForm.setValue("termId", "");
+      studentForm.setValue("liaId", "");
     }
   };
 
   // Handle program selection change
   const handleProgramChange = async (programId: string) => {
-    const termsData = await getEducationTerms(programId);
-    setTerms(termsData);
-    // Reset term selection
-    studentForm.setValue("termId", "");
+    const liasData = await getActiveLias(programId);
+    setLias(liasData);
+    // Reset LIA selection
+    studentForm.setValue("liaId", "");
   };
 
   // Validate student email domain
@@ -183,7 +183,7 @@ export function MultiStepRegistrationForm() {
             last_name: data.lastName,
             school_id: data.schoolId,
             program_id: data.programId,
-            term_id: data.termId
+            lia_id: data.liaId
           }
         }
       });
@@ -287,7 +287,7 @@ export function MultiStepRegistrationForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Kayıt türünüz</FormLabel>
-                                             <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Bir seçenek seçin" />
@@ -376,13 +376,13 @@ export function MultiStepRegistrationForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Okul</FormLabel>
-                                             <Select 
-                         onValueChange={(value) => {
-                           field.onChange(value);
-                           handleSchoolChange(value);
-                         }} 
-                         value={field.value}
-                       >
+                      <Select 
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          handleSchoolChange(value);
+                        }} 
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Okulunuzu seçin" />
@@ -407,14 +407,14 @@ export function MultiStepRegistrationForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Program</FormLabel>
-                                             <Select 
-                         onValueChange={(value) => {
-                           field.onChange(value);
-                           handleProgramChange(value);
-                         }} 
-                         value={field.value}
-                         disabled={!selectedSchool}
-                       >
+                      <Select 
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          handleProgramChange(value);
+                        }} 
+                        value={field.value}
+                        disabled={!selectedSchool}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Programınızı seçin" />
@@ -435,20 +435,20 @@ export function MultiStepRegistrationForm() {
 
                 <FormField
                   control={studentForm.control}
-                  name="termId"
+                  name="liaId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Dönem</FormLabel>
-                                             <Select onValueChange={field.onChange} value={field.value} disabled={programs.length === 0}>
+                      <FormLabel>LIA Programı</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={programs.length === 0}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Döneminizi seçin" />
+                            <SelectValue placeholder="LIA programınızı seçin" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {terms.map((term) => (
-                            <SelectItem key={term.id} value={term.id}>
-                              {term.name}
+                          {lias.map((lia) => (
+                            <SelectItem key={lia.id} value={lia.id}>
+                              {lia.lia_code} - {lia.education_term} ({new Date(lia.lia_start_date).toLocaleDateString('tr')} - {new Date(lia.lia_end_date).toLocaleDateString('tr')})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -573,13 +573,13 @@ export function MultiStepRegistrationForm() {
                   control={organizationForm.control}
                   name="name"
                   render={({ field }) => (
-                                         <FormItem>
-                       <FormLabel>Şirket Adı</FormLabel>
-                       <FormControl>
-                         <Input placeholder="Şirket adınız" {...field} />
-                       </FormControl>
-                       <FormMessage />
-                     </FormItem>
+                    <FormItem>
+                      <FormLabel>Şirket Adı</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Şirket adınız" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
 
@@ -610,8 +610,6 @@ export function MultiStepRegistrationForm() {
                     </FormItem>
                   )}
                 />
-
-
 
                 <div className="flex gap-2">
                   <Button 
