@@ -26,12 +26,9 @@ export function ProfileStatusCard({ status, percentage }: ProfileStatusCardProps
               {status}
             </Badge>
           ) : (
-            <div className={cn(
-              "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors",
-              "border-transparent bg-green-600 text-white shadow hover:bg-green-700"
-            )}>
+            <Badge variant="default" className="bg-green-500">
               {status}
-            </div>
+            </Badge>
           )}
           <span className="text-sm text-muted-foreground">
             {percentage}% completed

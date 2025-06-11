@@ -359,12 +359,9 @@ export function LiaProfileManager({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {isPublished ? (
-            <div className={cn(
-              "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors",
-              "border-transparent bg-green-600 text-white shadow hover:bg-green-700"
-            )}>
+            <Badge variant="default" className="bg-green-500">
               Published
-            </div>
+            </Badge>
           ) : (
             <Badge variant="destructive">
               Draft
