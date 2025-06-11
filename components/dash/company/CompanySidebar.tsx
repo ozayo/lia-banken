@@ -33,7 +33,7 @@ const navMainItems = [
     icon: Home,
   },
   {
-    title: "LIA İlanları",
+    title: "Job Postings",
     url: "/dashboard/company/job-postings",
     icon: FileText,
   },
