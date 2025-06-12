@@ -64,7 +64,7 @@ export default async function EducationProgramsPage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!, // We know email exists since user is authenticated
     avatar: user.user_metadata?.avatar_url
   }
@@ -73,7 +73,7 @@ export default async function EducationProgramsPage() {
     <SidebarProvider>
       <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <SchoolHeader breadcrumbs={[{ label: "Eğitim Programları" }]} />
+        <SchoolHeader breadcrumbs={[{ label: "Manage Programs" }]} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -81,17 +81,17 @@ export default async function EducationProgramsPage() {
               <div className="px-4 lg:px-6">
                 <div className="grid gap-6">
                   <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Eğitim Programları</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Education Programs</h1>
                     <p className="text-muted-foreground">
-                      Okulunuzun eğitim programlarını yönetin ve düzenleyin.
+                      Manage and organize your school's education programs.
                     </p>
                   </div>
                   
                   <Card>
                     <CardHeader>
-                      <CardTitle>Program Yönetimi</CardTitle>
+                      <CardTitle>Program Management</CardTitle>
                       <CardDescription>
-                        Eğitim programlarınızı ekleyin, düzenleyin ve silin.
+                        Add, edit and delete your education programs.
                       </CardDescription>
                     </CardHeader>
                     <CardContent>

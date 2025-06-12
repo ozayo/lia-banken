@@ -33,27 +33,27 @@ const navMainItems = [
     icon: Home,
   },
   {
-    title: "Eğitim Programları",
+    title: "Manage Programs",
     url: "/dashboard/school/programs",
     icon: BookOpen,
   },
   {
-    title: "Aktif LIA'lar",
+    title: "Manage LIA",
     url: "/dashboard/school/active-lias",
     icon: Users,
   },
   {
-    title: "Arşivlenmiş LIA'lar", 
+    title: "Archived LIA", 
     url: "/dashboard/school/archived-lias",
     icon: Calendar,
   },
   {
-    title: "Öğrenciler",
+    title: "Students",
     url: "/dashboard/school/students",
     icon: GraduationCap,
   },
   {
-    title: "İstatistikler",
+    title: "Analytics",
     url: "/dashboard/school/analytics",
     icon: BarChart3,
   },
@@ -61,17 +61,17 @@ const navMainItems = [
 
 const navSecondaryItems = [
   {
-    title: "Okul Profili",
+    title: "School Profile",
     url: "/dashboard/school/profile",
     icon: Building2,
   },
   {
-    title: "Ayarlar",
+    title: "Settings",
     url: "/dashboard/school/settings",
     icon: Settings2,
   },
   {
-    title: "Destek",
+    title: "Support",
     url: "#",
     icon: LifeBuoy,
   },
@@ -105,7 +105,7 @@ export function SchoolSidebar({ user, ...props }: SchoolSidebarProps) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">LIA Banken</span>
-                  <span className="truncate text-xs">Okul Yönetimi</span>
+                  <span className="truncate text-xs">School Management</span>
                 </div>
               </a>
             </SidebarMenuButton>

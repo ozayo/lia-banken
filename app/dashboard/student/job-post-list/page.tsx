@@ -14,6 +14,7 @@ interface JobPosting {
   status: string
   application_count: number
   created_at: string
+  company_id: string | null
   company_name: string | null
   company_website: string | null
   company_logo: string | null
@@ -23,10 +24,14 @@ interface JobPosting {
   category_name: string | null
   county_name: string | null
   municipality_name: string | null
+  has_applied: boolean
 }
 
 async function getJobPostings(): Promise<JobPosting[]> {
   const supabase = await createClient()
+  
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser()
   
   const { data, error } = await supabase
     .from('job_postings')
@@ -59,12 +64,30 @@ async function getJobPostings(): Promise<JobPosting[]> {
     return []
   }
 
+  // Get user's applications if logged in
+  let userApplications: string[] = []
+  if (user) {
+    const { data: applications } = await supabase
+      .from('applications')
+      .select('job_posting_id')
+      .eq('student_id', user.id)
+    
+    userApplications = applications?.map(app => app.job_posting_id) || []
+  }
+
+  // Filter out jobs user has already applied to
+  const availableJobs = data.filter(job => !userApplications.includes(job.id))
+
+  if (availableJobs.length === 0) {
+    return []
+  }
+
   // Get unique IDs for batch fetching
-  const companyIds = [...new Set(data.map(item => item.company_id).filter(Boolean))]
-  const categoryIds = [...new Set(data.map(item => item.category_id).filter(Boolean))]
-  const countyIds = [...new Set(data.map(item => item.location_county_id).filter(Boolean))]
-  const municipalityIds = [...new Set(data.map(item => item.location_municipality_id).filter(Boolean))]
-  const supervisorIds = [...new Set(data.map(item => item.supervisor_id).filter(Boolean))]
+  const companyIds = [...new Set(availableJobs.map(item => item.company_id).filter(Boolean))]
+  const categoryIds = [...new Set(availableJobs.map(item => item.category_id).filter(Boolean))]
+  const countyIds = [...new Set(availableJobs.map(item => item.location_county_id).filter(Boolean))]
+  const municipalityIds = [...new Set(availableJobs.map(item => item.location_municipality_id).filter(Boolean))]
+  const supervisorIds = [...new Set(availableJobs.map(item => item.supervisor_id).filter(Boolean))]
 
   // Fetch related data in parallel
   const [companiesData, categoriesData, countiesData, municipalitiesData, supervisorsData] = await Promise.all([
@@ -101,7 +124,7 @@ async function getJobPostings(): Promise<JobPosting[]> {
   }]) || [])
 
   // Transform the data
-  return data.map((item: any) => {
+  return availableJobs.map((item: any) => {
     const companyData = companiesMap.get(item.company_id)
     const supervisorData = supervisorsMap.get(item.supervisor_id)
     return {
@@ -115,6 +138,7 @@ async function getJobPostings(): Promise<JobPosting[]> {
       status: item.status,
       application_count: item.application_count,
       created_at: item.created_at,
+      company_id: item.company_id,
       company_name: companyData?.name || null,
       company_website: companyData?.website || null,
       company_logo: companyData?.logo || null,
@@ -124,6 +148,7 @@ async function getJobPostings(): Promise<JobPosting[]> {
       category_name: categoriesMap.get(item.category_id) || null,
       county_name: countiesMap.get(item.location_county_id) || null,
       municipality_name: municipalitiesMap.get(item.location_municipality_id) || null,
+      has_applied: false, // Always false since we filtered out applied jobs
     }
   })
 }
@@ -211,30 +236,17 @@ export default async function JobPostListPage() {
     <SidebarProvider>
       <StudentSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
+
           <StudentHeader 
             breadcrumbs={[
               { label: "Dashboard", href: "/dashboard/student" },
               { label: "Find Internships", href: "/dashboard/student/job-post-list" }
             ]} 
           />
-        </header>
+
 
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">Find Internships</h1>
-                <p className="text-muted-foreground">
-                  Browse available internship positions and apply today!
-                </p>
-              </div>
-            </div>
-
-            <JobPostingsGrid />
-          </div>
+          <JobPostingsGrid />
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -67,7 +67,7 @@ export default async function SchoolProfilePage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!, // We know email exists since user is authenticated
     avatar: user.user_metadata?.avatar_url
   }
@@ -76,7 +76,7 @@ export default async function SchoolProfilePage() {
     <SidebarProvider>
       <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <SchoolHeader breadcrumbs={[{ label: "Okul Profili" }]} />
+        <SchoolHeader breadcrumbs={[{ label: "School Profile" }]} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -84,18 +84,18 @@ export default async function SchoolProfilePage() {
               <div className="px-4 lg:px-6">
                 <div className="grid gap-6">
                   <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Okul Profili</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">School Profile</h1>
                     <p className="text-muted-foreground">
-                      Okulunuzun bilgilerini güncelleyin ve yönetin.
+                      Update and manage your school's information.
                     </p>
                   </div>
                   
                   <div className="grid gap-6">
                     <Card>
                       <CardHeader>
-                        <CardTitle>Okul Bilgileri</CardTitle>
+                        <CardTitle>School Information</CardTitle>
                         <CardDescription>
-                          Okulunuzun temel bilgilerini ve iletişim detaylarını düzenleyin.
+                          Edit your school's basic information and contact details.
                         </CardDescription>
                       </CardHeader>
                       <CardContent>

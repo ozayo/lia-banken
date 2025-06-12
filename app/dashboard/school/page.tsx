@@ -43,7 +43,7 @@ export default async function SchoolDashboardPage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!, // We know email exists since user is authenticated
     avatar: user.user_metadata?.avatar_url
   }
@@ -59,9 +59,9 @@ export default async function SchoolDashboardPage() {
               
               {/* Welcome Section */}
               <div className="grid gap-4 px-4 lg:px-6">
-                <h1 className="text-3xl font-bold tracking-tight">Okul Dashboard</h1>
+                <h1 className="text-3xl font-bold tracking-tight">School Dashboard</h1>
                 <p className="text-muted-foreground">
-                  Okulunuzu yönetin, programları düzenleyin ve öğrenci durumlarını takip edin.
+                  Manage your school, organize programs and track student progress.
                 </p>
               </div>
 
@@ -70,13 +70,13 @@ export default async function SchoolDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Toplam Öğrenci
+                      Total Students
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">1,234</div>
                     <p className="text-xs text-muted-foreground">
-                      +20.1% geçen aydan
+                      +20.1% from last month
                     </p>
                   </CardContent>
                 </Card>
@@ -84,13 +84,13 @@ export default async function SchoolDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Aktif Programlar
+                      Active Programs
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">12</div>
                     <p className="text-xs text-muted-foreground">
-                      +2 yeni program
+                      +2 new programs
                     </p>
                   </CardContent>
                 </Card>
@@ -98,13 +98,13 @@ export default async function SchoolDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      LIA Yerleştirmeleri
+                      LIA Placements
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">892</div>
                     <p className="text-xs text-muted-foreground">
-                      %89 başarı oranı
+                      89% success rate
                     </p>
                   </CardContent>
                 </Card>
@@ -112,13 +112,13 @@ export default async function SchoolDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Aktif Dönemler
+                      Active Terms
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">8</div>
                     <p className="text-xs text-muted-foreground">
-                      Bu akademik yıl
+                      This academic year
                     </p>
                   </CardContent>
                 </Card>
@@ -128,18 +128,18 @@ export default async function SchoolDashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 px-4 lg:px-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Son Aktiviteler</CardTitle>
+                    <CardTitle>Recent Activities</CardTitle>
                     <CardDescription>
-                      Okulunuzdaki güncel gelişmeler
+                      Latest updates from your school
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">Yeni öğrenci kaydı</p>
+                        <p className="text-sm font-medium">New student registration</p>
                         <p className="text-xs text-muted-foreground">
-                          Ali Veli - Frontend Development programına kayıt oldu
+                          Ali Veli - Registered for Frontend Development program
                         </p>
                       </div>
                     </div>
@@ -147,9 +147,9 @@ export default async function SchoolDashboardPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">LIA eşleşmesi</p>
+                        <p className="text-sm font-medium">LIA placement</p>
                         <p className="text-xs text-muted-foreground">
-                          Ayşe Özkan - TechCorp şirketinde LIA başladı
+                          Ayşe Özkan - Started LIA at TechCorp
                         </p>
                       </div>
                     </div>
@@ -157,9 +157,9 @@ export default async function SchoolDashboardPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">Program güncellendi</p>
+                        <p className="text-sm font-medium">Program updated</p>
                         <p className="text-xs text-muted-foreground">
-                          Backend Development programı müfredatı güncellendi
+                          Backend Development program curriculum updated
                         </p>
                       </div>
                     </div>
@@ -168,30 +168,30 @@ export default async function SchoolDashboardPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hızlı İşlemler</CardTitle>
+                    <CardTitle>Quick Actions</CardTitle>
                     <CardDescription>
-                      Sık kullanılan işlemler
+                      Frequently used operations
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Yeni Program Oluştur</div>
+                      <div className="font-medium">Create New Program</div>
                       <div className="text-xs text-muted-foreground">
-                        Okulunuza yeni eğitim programı ekleyin
+                        Add a new education program to your school
                       </div>
                     </button>
                     
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Dönem Ekle</div>
+                      <div className="font-medium">Add Term</div>
                       <div className="text-xs text-muted-foreground">
-                        Mevcut programlara yeni dönem ekleyin
+                        Add new term to existing programs
                       </div>
                     </button>
                     
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Öğrenci Listesi</div>
+                      <div className="font-medium">Student List</div>
                       <div className="text-xs text-muted-foreground">
-                        Kayıtlı öğrencileri görüntüleyin
+                        View registered students
                       </div>
                     </button>
                   </CardContent>

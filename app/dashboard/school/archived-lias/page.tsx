@@ -42,7 +42,7 @@ export default async function ArchivedLiasPage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!,
     avatar: user.user_metadata?.avatar_url
   }
@@ -51,16 +51,16 @@ export default async function ArchivedLiasPage() {
     <SidebarProvider>
       <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <SchoolHeader />
+        <SchoolHeader breadcrumbs={[{ label: "Archived LIA" }]} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <div className="grid gap-4 px-4 lg:px-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Arşivlenmiş LIA'lar</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Archived LIAs</h1>
                     <p className="text-muted-foreground">
-                      Tamamlanmış ve arşivlenmiş LIA programlarınızı görüntüleyin
+                      View completed and archived LIA programs
                     </p>
                   </div>
                 </div>

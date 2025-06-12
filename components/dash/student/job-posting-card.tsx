@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Calendar, MapPin, Building2, Briefcase, Eye, Send } from 'lucide-react'
+import { createClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
 import { JobPostingDetailModal } from './job-posting-detail-modal'
 
 interface JobPosting {
@@ -18,6 +20,7 @@ interface JobPosting {
   status: string
   application_count: number
   created_at: string
+  company_id: string | null
   company_name: string | null
   company_website: string | null
   company_logo: string | null
@@ -27,6 +30,7 @@ interface JobPosting {
   category_name: string | null
   county_name: string | null
   municipality_name: string | null
+  has_applied: boolean
 }
 
 interface JobPostingCardProps {
@@ -50,13 +54,102 @@ export function JobPostingCard({ job }: JobPostingCardProps) {
   const [isApplying, setIsApplying] = useState(false)
 
   const handleApplyNow = async () => {
+    if (!job.company_id) {
+      toast.error('Company information is missing')
+      return
+    }
+
     setIsApplying(true)
-    // TODO: Implement application logic
-    setTimeout(() => {
+    
+    try {
+      const supabase = createClient()
+      
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError || !user) {
+        toast.error('You must be logged in to apply')
+        return
+      }
+
+      // Get student profile with school_id
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, role, school_id')
+        .eq('id', user.id)
+        .single()
+
+      if (profileError || !profile || profile.role !== 'student') {
+        toast.error('Student profile not found')
+        return
+      }
+
+      if (!profile.school_id) {
+        toast.error('School information is missing from your profile')
+        return
+      }
+
+      // Check if already applied
+      const { data: existingApplication, error: checkError } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('student_id', user.id)
+        .eq('job_posting_id', job.id)
+        .single()
+
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error('Error checking existing application:', checkError)
+        toast.error('Error checking application status')
+        return
+      }
+
+      if (existingApplication) {
+        toast.error('You have already applied to this position')
+        return
+      }
+
+      // Create application
+      const { error: insertError } = await supabase
+        .from('applications')
+        .insert({
+          student_id: user.id,
+          job_posting_id: job.id,
+          company_id: job.company_id,
+          school_id: profile.school_id,
+          status: 'waiting_for_answer'
+        })
+
+      if (insertError) {
+        console.error('Error creating application:', insertError)
+        toast.error('Failed to submit application')
+        return
+      }
+
+      // Update job posting application count
+      const { error: updateError } = await supabase
+        .from('job_postings')
+        .update({ 
+          application_count: job.application_count + 1 
+        })
+        .eq('id', job.id)
+
+      if (updateError) {
+        console.error('Error updating application count:', updateError)
+        // Don't show error to user as the application was successful
+      }
+
+      toast.success('Application submitted successfully!')
+      
+      // Wait a bit for toast to show, then refresh
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
+
+    } catch (error) {
+      console.error('Unexpected error:', error)
+      toast.error('An unexpected error occurred')
+    } finally {
       setIsApplying(false)
-      // For now, just show a placeholder
-      alert('Application functionality coming soon!')
-    }, 1000)
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -161,10 +254,11 @@ export function JobPostingCard({ job }: JobPostingCardProps) {
               <Button 
                 size="sm"
                 onClick={handleApplyNow}
-                disabled={isApplying}
+                disabled={isApplying || job.has_applied}
+                variant={job.has_applied ? "secondary" : "default"}
               >
                 <Send className="h-4 w-4 mr-2" />
-                {isApplying ? 'Applying...' : 'Apply Now'}
+                {job.has_applied ? 'Applied' : isApplying ? 'Applying...' : 'Apply Now'}
               </Button>
             </div>
           </div>

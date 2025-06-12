@@ -24,19 +24,19 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
 
   const addDomain = () => {
     if (!newDomain.trim()) {
-      toast.error("Domain adı boş olamaz")
+      toast.error("Domain name cannot be empty")
       return
     }
 
     // Simple domain validation
     const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.[a-zA-Z]{2,}$/
     if (!domainPattern.test(newDomain.trim())) {
-      toast.error("Geçerli bir domain formatı girin (örn: okul.se)")
+      toast.error("Enter a valid domain format (e.g: school.se)")
       return
     }
 
     if (domains.includes(newDomain.trim())) {
-      toast.error("Bu domain zaten listede mevcut")
+      toast.error("This domain already exists in the list")
       return
     }
 
@@ -46,7 +46,7 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
 
   const removeDomain = (domainToRemove: string) => {
     if (domains.length === 1) {
-      toast.error("En az bir domain bulunmalıdır")
+      toast.error("At least one domain must be present")
       return
     }
     setDomains(domains.filter(domain => domain !== domainToRemove))
@@ -54,7 +54,7 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
 
   const handleSave = async () => {
     if (domains.length === 0) {
-      toast.error("En az bir domain eklemelisiniz")
+      toast.error("You must add at least one domain")
       return
     }
 
@@ -70,11 +70,11 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
 
       if (error) throw error
 
-      toast.success("Domain listesi başarıyla güncellendi")
+      toast.success("Domain list updated successfully")
       
       router.refresh()
     } catch (error: any) {
-      toast.error(error.message || "Domain listesi güncellenirken bir hata oluştu")
+      toast.error(error.message || "An error occurred while updating domain list")
     } finally {
       setIsLoading(false)
     }
@@ -91,7 +91,7 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
     <div className="grid gap-4">
       {/* Current domains */}
       <div className="grid gap-3">
-        <Label>Mevcut Domainler</Label>
+        <Label>Current Domains</Label>
         <div className="flex flex-wrap gap-2">
           {domains.map((domain) => (
             <Badge key={domain} variant="secondary" className="flex items-center gap-2">
@@ -107,20 +107,20 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
             </Badge>
           ))}
           {domains.length === 0 && (
-            <p className="text-sm text-muted-foreground">Henüz domain eklenmemiş</p>
+            <p className="text-sm text-muted-foreground">No domains added yet</p>
           )}
         </div>
       </div>
 
       {/* Add new domain */}
       <div className="grid gap-3">
-        <Label htmlFor="new-domain">Yeni Domain Ekle</Label>
+        <Label htmlFor="new-domain">Add New Domain</Label>
         <div className="flex gap-2">
           <Input
             id="new-domain"
             value={newDomain}
             onChange={(e) => setNewDomain(e.target.value)}
-            placeholder="ornek.se"
+            placeholder="example.se"
             onKeyPress={handleKeyPress}
           />
           <Button
@@ -133,7 +133,7 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Öğrenciler sadece bu domainlerden e-posta adresi ile kayıt olabilir.
+          Students can only register with email addresses from these domains.
         </p>
       </div>
 
@@ -143,7 +143,7 @@ export function SchoolDomainsForm({ schoolId, currentDomains }: SchoolDomainsFor
           onClick={handleSave} 
           disabled={isLoading || domains.length === 0}
         >
-          {isLoading ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
+          {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </div>

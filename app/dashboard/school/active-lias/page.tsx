@@ -57,9 +57,37 @@ export default async function ActiveLiasPage() {
     .eq("school_id", profile.school_id)
     .order("name")
 
+  // Get enrollment counts for LIAs (server-side to bypass RLS)
+  let enrollmentData: Record<string, number> = {}
+  
+  // Get LIAs and count enrollments manually
+  const { data: lias } = await supabase
+    .from("lias")
+    .select("id")
+    .eq("school_id", profile.school_id)
+    .in("lia_status", ["active", "inactive"])
+
+  if (lias) {
+    const liaIds = lias.map(l => l.id)
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("lia_id")
+      .in("lia_id", liaIds)
+      .eq("role", "student")
+
+    if (profiles) {
+      enrollmentData = profiles.reduce((acc, profile) => {
+        if (profile.lia_id) {
+          acc[profile.lia_id] = (acc[profile.lia_id] || 0) + 1
+        }
+        return acc
+      }, {} as Record<string, number>)
+    }
+  }
+
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!,
     avatar: user.user_metadata?.avatar_url
   }
@@ -68,16 +96,16 @@ export default async function ActiveLiasPage() {
     <SidebarProvider>
       <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <SchoolHeader />
+        <SchoolHeader breadcrumbs={[{ label: "Manage LIA" }]} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <div className="grid gap-4 px-4 lg:px-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Aktif LIA'lar</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Active LIAs</h1>
                     <p className="text-muted-foreground">
-                      Aktif olan LIA programlarınızı yönetin
+                      Manage your active LIA programs
                     </p>
                   </div>
                 </div>
@@ -86,6 +114,7 @@ export default async function ActiveLiasPage() {
                   schoolId={profile.school_id}
                   educationPrograms={educationPrograms || []}
                   schoolLocations={schoolLocations || []}
+                  initialEnrollmentCounts={enrollmentData}
                 />
               </div>
             </div>

@@ -41,6 +41,7 @@ interface ActiveLiasManagerProps {
   schoolId: string
   educationPrograms: (EducationProgram & { education_categories: EducationCategory })[]
   schoolLocations: SchoolLocation[]
+  initialEnrollmentCounts?: Record<string, number>
 }
 
 interface LiaWithProgram extends Lia {
@@ -53,7 +54,8 @@ interface LiaWithProgram extends Lia {
 export function ActiveLiasManager({ 
   schoolId, 
   educationPrograms, 
-  schoolLocations 
+  schoolLocations,
+  initialEnrollmentCounts = {}
 }: ActiveLiasManagerProps) {
   const [lias, setLias] = useState<LiaWithProgram[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -118,23 +120,30 @@ export function ActiveLiasManager({
 
       // Get enrolled student counts for each LIA
       const liaIds = liasData.map(lia => lia.id)
-      const { data: enrollmentData, error: enrollmentError } = await supabase
-        .from("profiles")
-        .select("lia_id")
-        .in("lia_id", liaIds)
-        .eq("role", "student")
+      
+      // Use server-side enrollment counts if available, otherwise fetch client-side
+      let enrollmentCounts = initialEnrollmentCounts
+      
+      if (Object.keys(enrollmentCounts).length === 0) {
+        // Fallback to client-side fetching if server-side data not available
+        const { data: enrollmentData, error: enrollmentError } = await supabase
+          .from("profiles")
+          .select("lia_id")
+          .in("lia_id", liaIds)
+          .eq("role", "student")
 
-      if (enrollmentError) {
-        console.warn("Could not fetch enrollment data:", enrollmentError)
-      }
-
-      // Count enrollments per LIA
-      const enrollmentCounts = enrollmentData?.reduce((acc, profile) => {
-        if (profile.lia_id) {
-          acc[profile.lia_id] = (acc[profile.lia_id] || 0) + 1
+        if (enrollmentError) {
+          console.warn("Could not fetch enrollment data from profiles:", enrollmentError)
         }
-        return acc
-      }, {} as Record<string, number>) || {}
+
+        // Count enrollments per LIA
+        enrollmentCounts = enrollmentData?.reduce((acc, profile) => {
+          if (profile.lia_id) {
+            acc[profile.lia_id] = (acc[profile.lia_id] || 0) + 1
+          }
+          return acc
+        }, {} as Record<string, number>) || {}
+      }
 
       // Combine LIA data with enrollment counts
       const liasWithEnrollments = liasData.map(lia => ({
@@ -147,7 +156,7 @@ export function ActiveLiasManager({
 
     } catch (error: any) {
       console.error("Error loading LIAs:", error)
-      toast.error("LIA'lar yüklenirken hata oluştu: " + error.message)
+      toast.error("Error loading LIAs: " + error.message)
     }
   }
 
@@ -209,14 +218,14 @@ export function ActiveLiasManager({
 
   const handleSave = async (status: 'inactive' | 'active' = 'inactive') => {
     if (!tableExists) {
-      toast.error("LIA tablosu henüz oluşturulmamış. Lütfen veritabanı migration'ını çalıştırın.")
+      toast.error("LIA table has not been created yet. Please run the database migration.")
       return
     }
 
     if (!formData.education_program_id || !formData.education_term || !formData.lia_code || 
         !formData.lia_start_date || !formData.lia_end_date || !formData.teacher_name || 
         !formData.teacher_email) {
-      toast.error("Zorunlu alanları doldurun")
+      toast.error("Please fill in all required fields")
       return
     }
 
@@ -261,8 +270,8 @@ export function ActiveLiasManager({
 
       if (error) throw error
 
-      const actionText = status === 'active' ? 'yayınlandı' : 'kaydedildi'
-      toast.success(editingLia ? `LIA güncellendi` : `LIA ${actionText}`)
+      const actionText = status === 'active' ? 'published' : 'saved'
+      toast.success(editingLia ? `LIA updated` : `LIA ${actionText}`)
       
       setIsDialogOpen(false)
       resetForm()
@@ -285,7 +294,7 @@ export function ActiveLiasManager({
 
       if (error) throw error
 
-      const statusText = newStatus === 'active' ? 'aktifleştirildi' : 'arşivlendi'
+      const statusText = newStatus === 'active' ? 'activated' : 'archived'
       toast.success(`LIA ${statusText}`)
       checkTableAndLoadLias()
     } catch (error: any) {
@@ -294,7 +303,7 @@ export function ActiveLiasManager({
   }
 
   const handleDelete = async (liaId: string) => {
-    if (!confirm("Bu LIA'yı silmek istediğinizden emin misiniz?")) {
+    if (!confirm("Are you sure you want to delete this LIA?")) {
       return
     }
 
@@ -311,7 +320,7 @@ export function ActiveLiasManager({
 
       if (error) throw error
 
-      toast.success("LIA silindi")
+      toast.success("LIA deleted")
       checkTableAndLoadLias()
     } catch (error: any) {
       toast.error(error.message)
@@ -325,9 +334,9 @@ export function ActiveLiasManager({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-800">Aktif</Badge>
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-800">Active</Badge>
       case 'inactive':
-        return <Badge variant="secondary">Taslak</Badge>
+        return <Badge variant="secondary">Draft</Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
     }
@@ -348,15 +357,15 @@ export function ActiveLiasManager({
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Users className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium text-muted-foreground mb-2">
-              LIA Sistemi Kurulumu Gerekli
+              LIA System Setup Required
             </h3>
             <p className="text-sm text-muted-foreground text-center">
-              LIA yönetim sistemi için veritabanı tablosu oluşturulmalı.
+              Database table for LIA management system needs to be created.
             </p>
             <div className="mt-4 p-4 bg-muted rounded-lg">
               <p className="text-sm">
-                <strong>database/migrations/create_lias_table.sql</strong> dosyasındaki SQL'i 
-                Supabase dashboard'unda çalıştırmanız gerekiyor.
+                <strong>database/migrations/create_lias_table.sql</strong> file's SQL needs to be 
+                executed in Supabase dashboard.
               </p>
             </div>
           </CardContent>
@@ -370,42 +379,42 @@ export function ActiveLiasManager({
       {/* Header with Add Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold">Aktif LIA Programları</h2>
+          <h2 className="text-lg font-semibold">Active LIA Programs</h2>
           <p className="text-sm text-muted-foreground">
-            {lias.length} LIA programı bulundu
+            {lias.length} LIA programs found
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={openAddDialog} className="gap-2">
               <Plus className="h-4 w-4" />
-              LIA Ekle
+              Add LIA
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingLia ? "LIA'yı Düzenle" : "Yeni LIA Ekle"}
+                {editingLia ? "Edit LIA" : "Add New LIA"}
               </DialogTitle>
               <DialogDescription>
-                LIA program bilgilerini doldurun
+                Fill in the LIA program information
               </DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-6 py-4">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="font-medium">Temel Bilgiler</h3>
+                <h3 className="font-medium">Basic Information</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="education_program_id">Eğitim Programı *</Label>
+                    <Label htmlFor="education_program_id">Education Program *</Label>
                     <Select
                       value={formData.education_program_id}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, education_program_id: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Program seçin" />
+                        <SelectValue placeholder="Select program" />
                       </SelectTrigger>
                       <SelectContent>
                         {educationPrograms.map((program) => (
@@ -418,29 +427,29 @@ export function ActiveLiasManager({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="education_term">Eğitim Dönemi *</Label>
+                    <Label htmlFor="education_term">Education Term *</Label>
                     <Input
                       id="education_term"
                       value={formData.education_term}
                       onChange={(e) => setFormData(prev => ({ ...prev, education_term: e.target.value }))}
-                      placeholder="Örn: 2023-2024, Vår 2025-Höst 2026"
+                      placeholder="e.g: 2023-2024, Spring 2025-Fall 2026"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="lia_code">LIA Kodu *</Label>
+                    <Label htmlFor="lia_code">LIA Code *</Label>
                     <Input
                       id="lia_code"
                       value={formData.lia_code}
                       onChange={(e) => setFormData(prev => ({ ...prev, lia_code: e.target.value }))}
-                      placeholder="Örn: LIA-001, A, V1"
+                      placeholder="e.g: LIA-001, A, V1"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lia_start_date">Başlangıç Tarihi *</Label>
+                    <Label htmlFor="lia_start_date">Start Date *</Label>
                     <Input
                       id="lia_start_date"
                       type="date"
@@ -450,7 +459,7 @@ export function ActiveLiasManager({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lia_end_date">Bitiş Tarihi *</Label>
+                    <Label htmlFor="lia_end_date">End Date *</Label>
                     <Input
                       id="lia_end_date"
                       type="date"
@@ -462,7 +471,7 @@ export function ActiveLiasManager({
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="student_count">Öğrenci Sayısı</Label>
+                    <Label htmlFor="student_count">Student Count</Label>
                     <Input
                       id="student_count"
                       type="number"
@@ -473,7 +482,7 @@ export function ActiveLiasManager({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="info_link">Bilgi Linki</Label>
+                    <Label htmlFor="info_link">Information Link</Label>
                     <Input
                       id="info_link"
                       type="url"
@@ -485,12 +494,12 @@ export function ActiveLiasManager({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="short_description">Kısa Açıklama</Label>
+                  <Label htmlFor="short_description">Short Description</Label>
                   <Textarea
                     id="short_description"
                     value={formData.short_description}
                     onChange={(e) => setFormData(prev => ({ ...prev, short_description: e.target.value }))}
-                    placeholder="LIA hakkında kısa bilgi"
+                    placeholder="Brief information about the LIA"
                     rows={3}
                   />
                 </div>
@@ -500,7 +509,7 @@ export function ActiveLiasManager({
 
               {/* Location Selection */}
               <div className="space-y-4">
-                <h3 className="font-medium">Lokasyonlar</h3>
+                <h3 className="font-medium">Locations</h3>
                 {schoolLocations.length > 0 ? (
                   <div className="grid grid-cols-2 gap-2">
                     {schoolLocations.map((location) => (
@@ -518,9 +527,9 @@ export function ActiveLiasManager({
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Henüz okul lokasyonu eklenmemiş. 
+                    No school locations added yet. 
                     <Button variant="link" className="p-0 h-auto" onClick={() => router.push("/dashboard/school/settings")}>
-                      Ayarlar sayfasından ekleyebilirsiniz.
+                      You can add them from settings page.
                     </Button>
                   </p>
                 )}
@@ -530,22 +539,22 @@ export function ActiveLiasManager({
 
               {/* Contact Information */}
               <div className="space-y-4">
-                <h3 className="font-medium">İletişim Bilgileri</h3>
+                <h3 className="font-medium">Contact Information</h3>
                 
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="teacher_name">LIA Sorumlusu Adı *</Label>
+                    <Label htmlFor="teacher_name">LIA Coordinator Name *</Label>
                     <Input
                       id="teacher_name"
                       value={formData.teacher_name}
                       onChange={(e) => setFormData(prev => ({ ...prev, teacher_name: e.target.value }))}
-                      placeholder="Ad Soyad"
+                      placeholder="Full Name"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="teacher_email">E-posta *</Label>
+                      <Label htmlFor="teacher_email">Email *</Label>
                       <Input
                         id="teacher_email"
                         type="email"
@@ -556,7 +565,7 @@ export function ActiveLiasManager({
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="teacher_phone">Telefon</Label>
+                      <Label htmlFor="teacher_phone">Phone</Label>
                       <Input
                         id="teacher_phone"
                         type="tel"
@@ -573,7 +582,7 @@ export function ActiveLiasManager({
             {/* Action Buttons */}
             <div className="flex justify-end gap-2 pt-4 border-t">
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                İptal
+                Cancel
               </Button>
               <Button 
                 variant="outline" 
@@ -582,7 +591,7 @@ export function ActiveLiasManager({
                 className="gap-2"
               >
                 <Save className="h-4 w-4" />
-                Taslak Kaydet
+                Save Draft
               </Button>
               <Button 
                 onClick={() => handleSave('active')}
@@ -590,7 +599,7 @@ export function ActiveLiasManager({
                 className="gap-2"
               >
                 <Play className="h-4 w-4" />
-                Yayınla
+                Publish
               </Button>
             </div>
           </DialogContent>
@@ -604,10 +613,10 @@ export function ActiveLiasManager({
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Users className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-muted-foreground mb-2">
-                Henüz LIA programı yok
+                No LIA programs yet
               </h3>
               <p className="text-sm text-muted-foreground text-center">
-                İlk LIA programınızı oluşturmak için "LIA Ekle" butonuna tıklayın.
+                Click "Add LIA" button to create your first LIA program.
               </p>
             </CardContent>
           </Card>
@@ -634,7 +643,7 @@ export function ActiveLiasManager({
                         variant="ghost" 
                         size="icon" 
                         onClick={() => handleStatusChange(lia.id, 'active')}
-                        title="Yayınla"
+                        title="Publish"
                       >
                         <Play className="h-4 w-4" />
                       </Button>
@@ -644,7 +653,7 @@ export function ActiveLiasManager({
                         variant="ghost" 
                         size="icon" 
                         onClick={() => handleStatusChange(lia.id, 'archived')}
-                        title="Arşivle"
+                        title="Archive"
                       >
                         <Archive className="h-4 w-4" />
                       </Button>
@@ -664,12 +673,12 @@ export function ActiveLiasManager({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{new Date(lia.lia_start_date).toLocaleDateString('tr')} - {new Date(lia.lia_end_date).toLocaleDateString('tr')}</span>
+                    <span>{new Date(lia.lia_start_date).toLocaleDateString('en')} - {new Date(lia.lia_end_date).toLocaleDateString('en')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span>
-                      {lia.enrolled_students_count || 0}/{lia.student_count} öğrenci
+                      {lia.enrolled_students_count || 0}/{lia.student_count} students
                       {lia.student_count > 0 && (
                         <span className="ml-1 text-xs text-muted-foreground">
                           ({(((lia.enrolled_students_count || 0) / lia.student_count) * 100).toFixed(1)}%)
@@ -708,11 +717,11 @@ export function ActiveLiasManager({
                       className="flex items-center gap-1 hover:text-primary"
                     >
                       <ExternalLink className="h-3 w-3" />
-                      <span>Detaylar</span>
+                      <span>Details</span>
                     </a>
                   )}
                 </div>
-                {/* Lokasyonlar */}
+                {/* Locations */}
                 <div className="mt-4">
                   <div className="flex flex-wrap gap-2">
                     {lia.location_ids.length > 0 ? (
@@ -725,7 +734,7 @@ export function ActiveLiasManager({
                         ) : null
                       })
                     ) : (
-                      <Badge variant="outline">Lokasyon belirtilmemiş</Badge>
+                      <Badge variant="outline">No location specified</Badge>
                     )}
                   </div>
                 </div>

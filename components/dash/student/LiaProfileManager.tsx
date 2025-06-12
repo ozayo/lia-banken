@@ -227,6 +227,64 @@ export function LiaProfileManager({
 
       if (result.error) throw result.error
 
+      // If publishing, also save to published_student_profiles table
+      if (publishStatus === 'published') {
+        // Collect all student links for the profile
+        const linkUrls = {
+          linkedin_url: links.find(link => link.link_name.toLowerCase().includes('linkedin'))?.url || null,
+          github_url: links.find(link => link.link_name.toLowerCase().includes('github'))?.url || null,
+          portfolio_url: links.find(link => 
+            link.link_name.toLowerCase().includes('portfolio') || 
+            link.link_name.toLowerCase().includes('website')
+          )?.url || null
+        }
+
+        const publishedProfileData = {
+          student_id: user.id,
+          first_name: profile.first_name || '',
+          last_name: profile.last_name || '',
+          email: user.email || '',
+          phone: profile.phone,
+          school_name: schoolInfo?.name || '',
+          program_name: programInfo?.name || '',
+          term_name: liaInfo?.education_term || '',
+          cv_url: cvPath,
+          skills: [], // We can add skills field to LIA form later
+          interests: positionTitle, // Using position title as interests for now
+          bio: coverLetter,
+          linkedin_url: linkUrls.linkedin_url,
+          github_url: linkUrls.github_url,
+          portfolio_url: linkUrls.portfolio_url,
+          lia_start_date: liaInfo?.lia_start_date || null,
+          lia_end_date: liaInfo?.lia_end_date || null,
+          is_published: true,
+          updated_at: new Date().toISOString()
+        }
+
+        // Upsert to published_student_profiles
+        const { error: publishError } = await supabase
+          .from("published_student_profiles")
+          .upsert(publishedProfileData, {
+            onConflict: 'student_id'
+          })
+
+        if (publishError) {
+          console.error('Error publishing profile:', publishError)
+          // Don't throw error here, just log it
+        }
+      } else if (publishStatus === 'draft') {
+        // If saving as draft, remove from published profiles or set as unpublished
+        const { error: unpublishError } = await supabase
+          .from("published_student_profiles")
+          .update({ is_published: false })
+          .eq("student_id", user.id)
+
+        if (unpublishError) {
+          console.error('Error unpublishing profile:', unpublishError)
+          // Don't throw error here, just log it
+        }
+      }
+
       setCurrentCvPath(cvPath)
       setCvFile(null)
       

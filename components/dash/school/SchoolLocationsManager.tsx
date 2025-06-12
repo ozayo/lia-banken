@@ -116,7 +116,7 @@ export function SchoolLocationsManager({
 
   const handleSave = async () => {
     if (!formData.name.trim()) {
-      toast.error("Lokasyon adı gereklidir")
+      toast.error("Location name is required")
       return
     }
 
@@ -153,7 +153,7 @@ export function SchoolLocationsManager({
 
       if (error) throw error
 
-      toast.success(editingLocation ? "Lokasyon güncellendi" : "Lokasyon eklendi")
+      toast.success(editingLocation ? "Location updated" : "Location added")
       
       setIsDialogOpen(false)
       resetForm()
@@ -166,7 +166,7 @@ export function SchoolLocationsManager({
   }
 
   const handleDelete = async (locationId: string) => {
-    if (!confirm("Bu lokasyonu silmek istediğinizden emin misiniz?")) {
+    if (!confirm("Are you sure you want to delete this location?")) {
       return
     }
 
@@ -180,7 +180,7 @@ export function SchoolLocationsManager({
 
       if (error) throw error
 
-      toast.success("Lokasyon silindi")
+      toast.success("Location deleted")
       router.refresh()
     } catch (error: any) {
       toast.error(error.message)
@@ -193,34 +193,34 @@ export function SchoolLocationsManager({
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-muted-foreground">
-            {locations.length} lokasyon mevcut
+            {locations.length} location{locations.length !== 1 ? 's' : ''} available
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={openAddDialog}>
               <Plus className="h-4 w-4 mr-2" />
-              Lokasyon Ekle
+              Add Location
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
-                {editingLocation ? "Lokasyonu Düzenle" : "Yeni Lokasyon Ekle"}
+                {editingLocation ? "Edit Location" : "Add New Location"}
               </DialogTitle>
               <DialogDescription>
-                Okulunuzun yeni bir lokasyonunu ekleyin veya mevcut lokasyonu düzenleyin.
+                Add a new location for your school or edit an existing location.
               </DialogDescription>
             </DialogHeader>
             
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="location-name">Lokasyon Adı</Label>
+                <Label htmlFor="location-name">Location Name</Label>
                 <Input
                   id="location-name"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Ana Kampüs, İkinci Şube, vb."
+                  placeholder="Main Campus, Second Branch, etc."
                   required
                 />
               </div>
@@ -228,7 +228,7 @@ export function SchoolLocationsManager({
               <Separator />
 
               <div className="grid gap-2">
-                <Label htmlFor="location-street">Sokak Adresi</Label>
+                <Label htmlFor="location-street">Street Address</Label>
                 <Input
                   id="location-street"
                   value={formData.address_street}
@@ -238,7 +238,7 @@ export function SchoolLocationsManager({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="location-postal">Posta Kodu</Label>
+                <Label htmlFor="location-postal">Postal Code</Label>
                 <Input
                   id="location-postal"
                   value={formData.address_postal_code}
@@ -250,13 +250,13 @@ export function SchoolLocationsManager({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="location-county">İl (Län)</Label>
+                  <Label htmlFor="location-county">County (Län)</Label>
                   <Select 
                     value={formData.address_county_id} 
                     onValueChange={(value) => setFormData(prev => ({ ...prev, address_county_id: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="İl seçin" />
+                      <SelectValue placeholder="Select county" />
                     </SelectTrigger>
                     <SelectContent>
                       {counties.map((county) => (
@@ -269,14 +269,14 @@ export function SchoolLocationsManager({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="location-municipality">Belediye (Kommun)</Label>
+                  <Label htmlFor="location-municipality">Municipality (Kommun)</Label>
                   <Select 
                     value={formData.address_municipality_id} 
                     onValueChange={(value) => setFormData(prev => ({ ...prev, address_municipality_id: value }))}
                     disabled={!formData.address_county_id}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={formData.address_county_id ? "Belediye seçin" : "Önce il seçin"} />
+                      <SelectValue placeholder={formData.address_county_id ? "Select municipality" : "Select county first"} />
                     </SelectTrigger>
                     <SelectContent>
                       {filteredMunicipalities.map((municipality) => (
@@ -295,10 +295,10 @@ export function SchoolLocationsManager({
                   onClick={() => setIsDialogOpen(false)}
                   disabled={isLoading}
                 >
-                  İptal
+                  Cancel
                 </Button>
                 <Button onClick={handleSave} disabled={isLoading}>
-                  {isLoading ? "Kaydediliyor..." : (editingLocation ? "Güncelle" : "Ekle")}
+                  {isLoading ? "Saving..." : (editingLocation ? "Update" : "Add")}
                 </Button>
               </div>
             </div>
@@ -312,8 +312,8 @@ export function SchoolLocationsManager({
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-6">
               <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Henüz lokasyon eklenmemiş</p>
-              <p className="text-sm text-muted-foreground">İlk lokasyonunuzu eklemek için yukarıdaki butonu kullanın.</p>
+              <p className="text-muted-foreground">No locations added yet</p>
+              <p className="text-sm text-muted-foreground">Use the button above to add your first location.</p>
             </CardContent>
           </Card>
         ) : (
@@ -356,7 +356,7 @@ export function SchoolLocationsManager({
                     </p>
                   )}
                   {!location.address_street && !location.address_postal_code && !location.address_municipality?.name && (
-                    <p className="text-muted-foreground italic">Adres bilgisi girilmemiş</p>
+                    <p className="text-muted-foreground italic">No address information provided</p>
                   )}
                 </div>
               </CardContent>

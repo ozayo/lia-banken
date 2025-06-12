@@ -109,11 +109,11 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
 
       if (error) throw error
 
-      toast.success("Okul profili başarıyla güncellendi")
+      toast.success("School profile updated successfully")
       
       router.refresh()
     } catch (error: any) {
-      toast.error(error.message || "Profil güncellenirken bir hata oluştu")
+      toast.error(error.message || "An error occurred while updating profile")
     } finally {
       setIsLoading(false)
     }
@@ -124,7 +124,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
     if (!file) return
 
     if (file.size > 2 * 1024 * 1024) { // 2MB limit
-      toast.error("Dosya boyutu 2MB'dan küçük olmalıdır")
+      toast.error("File size must be less than 2MB")
       return
     }
 
@@ -133,7 +133,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
       
       // Get current user for auth
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error("Kullanıcı oturumu bulunamadı")
+      if (!user) throw new Error("User session not found")
       
       // Upload file to user's folder (to avoid RLS issues)
       const fileExt = file.name.split('.').pop()
@@ -161,12 +161,12 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
 
       if (updateError) throw updateError
 
-      toast.success("Okul logosu başarıyla güncellendi")
+      toast.success("School logo updated successfully")
       
       router.refresh()
     } catch (error: any) {
       console.error("Logo upload error:", error)
-      toast.error(error.message || "Logo yüklenirken bir hata oluştu")
+      toast.error(error.message || "An error occurred while uploading logo")
     }
   }
 
@@ -183,7 +183,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
         <div>
           <Label htmlFor="logo" className="cursor-pointer">
             <Button variant="outline" asChild>
-              <span>Logo Değiştir</span>
+              <span>Change Logo</span>
             </Button>
             <Input
               id="logo"
@@ -194,7 +194,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
             />
           </Label>
           <p className="text-sm text-muted-foreground mt-1">
-            JPG, PNG veya GIF. Maksimum 2MB.
+            JPG, PNG or GIF. Maximum 2MB.
           </p>
         </div>
       </div>
@@ -204,40 +204,40 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
       {/* Basic Information */}
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="name">Okul Adı</Label>
+          <Label htmlFor="name">School Name</Label>
           <Input
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Okul adını girin"
+            placeholder="Enter school name"
             required
           />
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="description">Okul Hakkında</Label>
+          <Label htmlFor="description">About School</Label>
           <Textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Okulunuz hakkında kısa bir açıklama yazın..."
+            placeholder="Write a brief description about your school..."
             rows={4}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="website">Web Sitesi</Label>
+            <Label htmlFor="website">Website</Label>
             <Input
               id="website"
               type="url"
               value={websiteUrl}
               onChange={(e) => setWebsiteUrl(e.target.value)}
-              placeholder="https://okul.se"
+              placeholder="https://school.se"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="org-number">Organizasyon Numarası</Label>
+            <Label htmlFor="org-number">Organization Number</Label>
             <Input
               id="org-number"
               value={organizationNumber}
@@ -252,21 +252,21 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
 
       {/* Contact Information */}
       <div className="grid gap-4">
-        <h3 className="text-lg font-medium">İletişim Bilgileri</h3>
+        <h3 className="text-lg font-medium">Contact Information</h3>
         
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="contact-email">İletişim E-posta</Label>
+            <Label htmlFor="contact-email">Contact Email</Label>
             <Input
               id="contact-email"
               type="email"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="iletisim@okul.se"
+              placeholder="contact@school.se"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="contact-phone">Telefon Numarası</Label>
+            <Label htmlFor="contact-phone">Phone Number</Label>
             <Input
               id="contact-phone"
               type="tel"
@@ -282,11 +282,11 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
 
       {/* Address */}
       <div className="grid gap-4">
-        <h3 className="text-lg font-medium">Adres Bilgileri</h3>
+        <h3 className="text-lg font-medium">Address Information</h3>
         
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="address-street">Sokak Adresi</Label>
+            <Label htmlFor="address-street">Street Address</Label>
             <Input
               id="address-street"
               value={addressStreet}
@@ -296,7 +296,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
           </div>
           
           <div className="grid gap-2">
-            <Label htmlFor="postal-code">Posta Kodu</Label>
+            <Label htmlFor="postal-code">Postal Code</Label>
             <Input
               id="postal-code"
               value={addressPostalCode}
@@ -308,10 +308,10 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
 
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="county">İl (Län)</Label>
+              <Label htmlFor="county">County (Län)</Label>
               <Select value={selectedCountyId} onValueChange={setSelectedCountyId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="İl seçin" />
+                  <SelectValue placeholder="Select county" />
                 </SelectTrigger>
                 <SelectContent>
                   {counties.map((county) => (
@@ -324,14 +324,14 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="municipality">Belediye (Kommun)</Label>
+              <Label htmlFor="municipality">Municipality (Kommun)</Label>
               <Select 
                 value={selectedMunicipalityId} 
                 onValueChange={setSelectedMunicipalityId}
                 disabled={!selectedCountyId}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={selectedCountyId ? "Belediye seçin" : "Önce il seçin"} />
+                  <SelectValue placeholder={selectedCountyId ? "Select municipality" : "Select county first"} />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredMunicipalities.map((municipality) => (
@@ -347,7 +347,7 @@ export function SchoolProfileForm({ school, counties, municipalities }: SchoolPr
       </div>
 
       <Button type="submit" disabled={isLoading} className="w-fit">
-        {isLoading ? "Güncelleniyor..." : "Profili Güncelle"}
+        {isLoading ? "Updating..." : "Update Profile"}
       </Button>
     </form>
   )

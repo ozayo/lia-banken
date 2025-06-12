@@ -137,7 +137,7 @@ export function EducationProgramsManager({
 
   const handleSave = async () => {
     if (!formData.name.trim()) {
-      toast.error("Program adı gereklidir")
+      toast.error("Program name is required")
       return
     }
 
@@ -178,7 +178,7 @@ export function EducationProgramsManager({
 
       if (error) throw error
 
-      toast.success(editingProgram ? "Program güncellendi" : "Program eklendi")
+      toast.success(editingProgram ? "Program updated" : "Program added")
       
       setIsDialogOpen(false)
       resetForm()
@@ -191,7 +191,7 @@ export function EducationProgramsManager({
   }
 
   const handleDelete = async (programId: string) => {
-    if (!confirm("Bu programı silmek istediğinizden emin misiniz?")) {
+    if (!confirm("Are you sure you want to delete this program?")) {
       return
     }
 
@@ -205,7 +205,7 @@ export function EducationProgramsManager({
 
       if (error) throw error
 
-      toast.success("Program silindi")
+      toast.success("Program deleted")
       router.refresh()
     } catch (error: any) {
       toast.error(error.message)
@@ -218,23 +218,23 @@ export function EducationProgramsManager({
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-muted-foreground">
-            {programs.length} program mevcut
+            {programs.length} programs available
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={openAddDialog}>
               <Plus className="h-4 w-4 mr-2" />
-              Eğitim Ekle
+              Add Program
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingProgram ? "Programı Düzenle" : "Yeni Eğitim Programı Ekle"}
+                {editingProgram ? "Edit Program" : "Add New Education Program"}
               </DialogTitle>
               <DialogDescription>
-                Eğitim programının detaylarını girin.
+                Enter the education program details.
               </DialogDescription>
             </DialogHeader>
             
@@ -243,17 +243,17 @@ export function EducationProgramsManager({
               <div className="grid gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="program-name">Eğitim Adı*</Label>
+                    <Label htmlFor="program-name">Program Name*</Label>
                     <Input
                       id="program-name"
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="Frontend-utvecklare inom ramverk"
+                      placeholder="Frontend Developer with Frameworks"
                       required
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="program-code">Eğitim Kodu</Label>
+                    <Label htmlFor="program-code">Program Code</Label>
                     <Input
                       id="program-code"
                       value={formData.education_code}
@@ -264,13 +264,13 @@ export function EducationProgramsManager({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="program-category">Eğitim Kategorisi</Label>
+                  <Label htmlFor="program-category">Program Category</Label>
                   <Select 
                     value={formData.category_id} 
                     onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Kategori seçin" />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((category) => (
@@ -283,24 +283,24 @@ export function EducationProgramsManager({
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="program-description">Eğitim Açıklaması</Label>
+                  <Label htmlFor="program-description">Program Description</Label>
                   <Textarea
                     id="program-description"
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Bu programda öğrenciler..."
+                    placeholder="In this program students will learn..."
                     rows={3}
                   />
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="program-website">Eğitim Web Site Linki</Label>
+                  <Label htmlFor="program-website">Program Website Link</Label>
                   <Input
                     id="program-website"
                     type="url"
                     value={formData.website_link}
                     onChange={(e) => setFormData(prev => ({ ...prev, website_link: e.target.value }))}
-                    placeholder="https://okul.se/frontend-utvecklare"
+                    placeholder="https://school.se/frontend-developer"
                   />
                 </div>
               </div>
@@ -310,24 +310,24 @@ export function EducationProgramsManager({
               {/* Study Details */}
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="program-omfattning">Omfattning</Label>
+                  <Label htmlFor="program-omfattning">Scope</Label>
                   <Input
                     id="program-omfattning"
                     value={formData.omfattning}
                     onChange={(e) => setFormData(prev => ({ ...prev, omfattning: e.target.value }))}
-                    placeholder="400 YH-poäng (ca 2 år)"
+                    placeholder="400 YH-points (approx. 2 years)"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="program-studietakt">Studietakt</Label>
+                    <Label htmlFor="program-studietakt">Study Pace</Label>
                     <Select 
                       value={formData.studietakt} 
                       onValueChange={(value) => setFormData(prev => ({ ...prev, studietakt: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Studietakt seçin" />
+                        <SelectValue placeholder="Select study pace" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="100%">100%</SelectItem>
@@ -339,16 +339,16 @@ export function EducationProgramsManager({
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="program-studieform">Studieform</Label>
+                    <Label htmlFor="program-studieform">Study Form</Label>
                     <Select 
                       value={formData.studieform} 
                       onValueChange={(value) => setFormData(prev => ({ ...prev, studieform: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Studieform seçin" />
+                        <SelectValue placeholder="Select study form" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Plats">Plats</SelectItem>
+                        <SelectItem value="On-site">On-site</SelectItem>
                         <SelectItem value="Distance">Distance</SelectItem>
                         <SelectItem value="Flex">Flex</SelectItem>
                       </SelectContent>
@@ -361,11 +361,11 @@ export function EducationProgramsManager({
 
               {/* Location Selection */}
               <div className="grid gap-4">
-                <Label>Eğitim Lokasyonları</Label>
+                <Label>Program Locations</Label>
                 <div className="grid gap-2 max-h-32 overflow-y-auto">
                   {locations.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
-                      Henüz lokasyon eklenmemiş. Önce ayarlardan lokasyon ekleyin.
+                      No locations added yet. Please add locations from settings first.
                     </p>
                   ) : (
                     locations.map((location) => (
@@ -392,10 +392,10 @@ export function EducationProgramsManager({
                   onClick={() => setIsDialogOpen(false)}
                   disabled={isLoading}
                 >
-                  İptal
+                  Cancel
                 </Button>
                 <Button onClick={handleSave} disabled={isLoading}>
-                  {isLoading ? "Kaydediliyor..." : (editingProgram ? "Güncelle" : "Ekle")}
+                  {isLoading ? "Saving..." : (editingProgram ? "Update" : "Add")}
                 </Button>
               </div>
             </div>
@@ -409,8 +409,8 @@ export function EducationProgramsManager({
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-6">
               <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Henüz eğitim programı eklenmemiş</p>
-              <p className="text-sm text-muted-foreground">İlk programınızı eklemek için yukarıdaki butonu kullanın.</p>
+              <p className="text-muted-foreground">No education programs added yet</p>
+              <p className="text-sm text-muted-foreground">Use the button above to add your first program.</p>
             </CardContent>
           </Card>
         ) : (

@@ -76,7 +76,7 @@ export default async function SchoolSettingsPage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Okul'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'School'} ${profile.last_name || 'Admin'}`,
     email: user.email!, // We know email exists since user is authenticated
     avatar: user.user_metadata?.avatar_url
   }
@@ -85,7 +85,7 @@ export default async function SchoolSettingsPage() {
     <SidebarProvider>
       <SchoolSidebar user={sidebarUser} variant="inset" />
       <SidebarInset>
-        <SchoolHeader breadcrumbs={[{ label: "Ayarlar" }]} />
+        <SchoolHeader breadcrumbs={[{ label: "Settings" }]} />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -93,25 +93,25 @@ export default async function SchoolSettingsPage() {
               <div className="px-4 lg:px-6">
                 <div className="grid gap-6">
                   <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Okul Ayarları</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">School Settings</h1>
                     <p className="text-muted-foreground">
-                      Okulunuzun domain ve lokasyon ayarlarını yönetin.
+                      Manage your school's domain and location settings.
                     </p>
                   </div>
                   
                   <Tabs defaultValue="domains" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="domains">Öğrenci Domainleri</TabsTrigger>
-                      <TabsTrigger value="locations">Okul Lokasyonları</TabsTrigger>
+                      <TabsTrigger value="domains">Student Domains</TabsTrigger>
+                      <TabsTrigger value="locations">School Locations</TabsTrigger>
                     </TabsList>
                     
                     <TabsContent value="domains" className="space-y-4">
                       <Card>
                         <CardHeader>
-                          <CardTitle>Öğrenci E-posta Domainleri</CardTitle>
+                          <CardTitle>Student Email Domains</CardTitle>
                           <CardDescription>
-                            Öğrencilerin kayıt olabileceği e-posta domain(ler)ini yönetin. 
-                            Öğrenciler sadece bu domainlerden e-posta adresi ile kayıt olabilir.
+                            Manage the email domain(s) that students can register with. 
+                            Students can only register with email addresses from these domains.
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -126,9 +126,9 @@ export default async function SchoolSettingsPage() {
                     <TabsContent value="locations" className="space-y-4">
                       <Card>
                         <CardHeader>
-                          <CardTitle>Okul Lokasyonları</CardTitle>
+                          <CardTitle>School Locations</CardTitle>
                           <CardDescription>
-                            Okulunuzun farklı kampüs veya eğitim lokasyonlarını yönetin.
+                            Manage your school's different campus or education locations.
                           </CardDescription>
                         </CardHeader>
                         <CardContent>

@@ -38,22 +38,22 @@ const navMainItems = [
     icon: FileText,
   },
   {
-    title: "Başvurular",
+    title: "Applications",
     url: "/dashboard/company/applications",
     icon: Users,
   },
   {
-    title: "Öğrenciler",
+    title: "Students",
     url: "/dashboard/company/students",
     icon: Users,
   },
   {
-    title: "Takvim",
+    title: "Calendar",
     url: "/dashboard/company/calendar",
     icon: Calendar,
   },
   {
-    title: "Raporlar",
+    title: "Reports",
     url: "/dashboard/company/reports",
     icon: BarChart3,
   },
@@ -61,17 +61,17 @@ const navMainItems = [
 
 const navSecondaryItems = [
   {
-    title: "Company Profili",
+    title: "Company Profile",
     url: "/dashboard/company/profile",
     icon: Building2,
   },
   {
-    title: "Ayarlar",
+    title: "Settings",
     url: "/dashboard/company/settings",
     icon: Settings2,
   },
   {
-    title: "Destek",
+    title: "Support",
     url: "#",
     icon: LifeBuoy,
   },
@@ -105,7 +105,7 @@ export function CompanySidebar({ user, ...props }: CompanySidebarProps) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">LIA Banken</span>
-                  <span className="truncate text-xs">Şirket Yönetimi</span>
+                  <span className="truncate text-xs">Company Portal</span>
                 </div>
               </a>
             </SidebarMenuButton>

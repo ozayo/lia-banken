@@ -17,22 +17,32 @@ export default async function CompanyDashboardPage() {
     error: userError
   } = await supabase.auth.getUser()
 
+  console.log('Company Dashboard - User:', user)
+  console.log('Company Dashboard - User Error:', userError)
+
   if (!user) {
+    console.log('Company Dashboard - No user, redirecting to login')
     redirect("/auth/login")
   }
 
   // Check if user has company role and get profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role, company_id, first_name, last_name, phone")
     .eq("id", user.id)
     .single()
 
+  console.log('Company Dashboard - Profile:', profile)
+  console.log('Company Dashboard - Profile Error:', profileError)
+  console.log('Company Dashboard - User ID:', user.id)
+
   if (!profile) {
+    console.log('Company Dashboard - No profile, redirecting to login')
     redirect("/auth/login")
   }
 
   if (profile.role !== "company") {
+    console.log('Company Dashboard - Not company role, redirecting to home')
     redirect("/") // Redirect to home if not a company user
   }
 
@@ -54,7 +64,7 @@ export default async function CompanyDashboardPage() {
 
   // Prepare user data for sidebar
   const sidebarUser = {
-    name: `${profile.first_name || 'Şirket'} ${profile.last_name || 'Admin'}`,
+    name: `${profile.first_name || 'Company'} ${profile.last_name || 'Admin'}`,
     email: user.email!, // We know email exists since user is authenticated
     avatar: user.user_metadata?.avatar_url
   }
@@ -70,9 +80,9 @@ export default async function CompanyDashboardPage() {
               
               {/* Welcome Section */}
               <div className="grid gap-4 px-4 lg:px-6">
-                <h1 className="text-3xl font-bold tracking-tight">Şirket Dashboard</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Company Dashboard</h1>
                 <p className="text-muted-foreground">
-                  Şirketinizi yönetin, LIA ilanları oluşturun ve öğrenci başvurularını değerlendirin.
+                  Manage your company, create internship postings and evaluate student applications.
                 </p>
               </div>
 
@@ -81,13 +91,13 @@ export default async function CompanyDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Aktif LIA İlanları
+                      Active Job Postings
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">24</div>
                     <p className="text-xs text-muted-foreground">
-                      +4 bu aydan
+                      +4 this month
                     </p>
                   </CardContent>
                 </Card>
@@ -95,13 +105,13 @@ export default async function CompanyDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Bekleyen Başvurular
+                      Pending Applications
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">142</div>
                     <p className="text-xs text-muted-foreground">
-                      +22 bu hafta
+                      +22 this week
                     </p>
                   </CardContent>
                 </Card>
@@ -109,13 +119,13 @@ export default async function CompanyDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Aktif LIA Öğrencileri
+                      Active Interns
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">18</div>
                     <p className="text-xs text-muted-foreground">
-                      3 farklı pozisyonda
+                      3 different positions
                     </p>
                   </CardContent>
                 </Card>
@@ -123,13 +133,13 @@ export default async function CompanyDashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Tamamlanan LIA'lar
+                      Completed Internships
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">156</div>
                     <p className="text-xs text-muted-foreground">
-                      Bu akademik yıl
+                      This academic year
                     </p>
                   </CardContent>
                 </Card>
@@ -139,18 +149,18 @@ export default async function CompanyDashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 px-4 lg:px-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Son Aktiviteler</CardTitle>
+                    <CardTitle>Recent Activity</CardTitle>
                     <CardDescription>
-                      Şirketinizdeki güncel gelişmeler
+                      Latest updates from your company
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">Yeni başvuru</p>
+                        <p className="text-sm font-medium">New application</p>
                         <p className="text-xs text-muted-foreground">
-                          Mehmet Kaya - Frontend Developer pozisyonuna başvurdu
+                          Mehmet Kaya applied for Frontend Developer position
                         </p>
                       </div>
                     </div>
@@ -158,9 +168,9 @@ export default async function CompanyDashboardPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">LIA başladı</p>
+                        <p className="text-sm font-medium">Internship started</p>
                         <p className="text-xs text-muted-foreground">
-                          Ayşe Demir - Backend Developer olarak LIA'ya başladı
+                          Ayşe Demir started internship as Backend Developer
                         </p>
                       </div>
                     </div>
@@ -168,9 +178,9 @@ export default async function CompanyDashboardPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                       <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium">İlan güncellendi</p>
+                        <p className="text-sm font-medium">Job posting updated</p>
                         <p className="text-xs text-muted-foreground">
-                          UX/UI Designer ilanı güncellendi
+                          UX/UI Designer posting was updated
                         </p>
                       </div>
                     </div>
@@ -179,30 +189,30 @@ export default async function CompanyDashboardPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hızlı İşlemler</CardTitle>
+                    <CardTitle>Quick Actions</CardTitle>
                     <CardDescription>
-                      Sık kullanılan işlemler
+                      Frequently used actions
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Yeni LIA İlanı Oluştur</div>
+                      <div className="font-medium">Create New Job Posting</div>
                       <div className="text-xs text-muted-foreground">
-                        Yeni pozisyon için LIA ilanı yayınlayın
+                        Publish a new internship position
                       </div>
                     </button>
                     
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Başvuruları İncele</div>
+                      <div className="font-medium">Review Applications</div>
                       <div className="text-xs text-muted-foreground">
-                        Bekleyen başvuruları değerlendirin
+                        Evaluate pending applications
                       </div>
                     </button>
                     
                     <button className="w-full text-left p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="font-medium">Şirket Profili</div>
+                      <div className="font-medium">Company Profile</div>
                       <div className="text-xs text-muted-foreground">
-                        Şirket bilgilerinizi güncelleyin
+                        Update your company information
                       </div>
                     </button>
                   </CardContent>
