@@ -195,12 +195,12 @@ export function MultiStepRegistrationForm() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("User creation failed");
 
-      alert("Kayıt başarılı! Email adresinizi kontrol edip doğrulama linkine tıklayın.");
+      alert("Registration successful! Check your email address and click on the verification link.");
       router.push("/auth/login");
       
     } catch (error: any) {
       console.error("Registration error:", error);
-      alert("Kayıt sırasında hata oluştu: " + error.message);
+      alert("An error occurred during registration: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -230,12 +230,12 @@ export function MultiStepRegistrationForm() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("User creation failed");
 
-      alert("Kayıt başarılı! Email adresinizi kontrol edip doğrulama linkine tıklayın.");
+      alert("Registration successful! Check your email address and click on the verification link.");
       router.push("/auth/login");
       
     } catch (error: any) {
       console.error("Registration error:", error);
-      alert("Kayıt sırasında hata oluştu: " + error.message);
+      alert("An error occurred during registration: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -264,12 +264,12 @@ export function MultiStepRegistrationForm() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("User creation failed");
 
-      alert("Kayıt başarılı! Email adresinizi kontrol edip doğrulama linkine tıklayın.");
+      alert("Registration successful! Check your email address and click on the verification link.");
       router.push("/auth/login");
       
     } catch (error: any) {
       console.error("Registration error:", error);
-      alert("Kayıt sırasında hata oluştu: " + error.message);
+      alert("An error occurred during registration: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -280,7 +280,7 @@ export function MultiStepRegistrationForm() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {currentStep === "userType" ? "Kullanıcı Tipi Seçin" : "Kayıt Bilgileri"}
+            {currentStep === "userType" ? "Select registration type" : "Registration details"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -292,17 +292,17 @@ export function MultiStepRegistrationForm() {
                   name="userType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Kayıt türünüz</FormLabel>
+                      <FormLabel>Your registration type</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Bir seçenek seçin" />
+                            <SelectValue placeholder="Select an option" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="student">Öğrenci</SelectItem>
-                          <SelectItem value="school">Okul</SelectItem>
-                          <SelectItem value="company">Şirket</SelectItem>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="school">School</SelectItem>
+                          <SelectItem value="company">Company</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -325,9 +325,9 @@ export function MultiStepRegistrationForm() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>İsim</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="İsminiz" {...field} />
+                          <Input placeholder="Name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -338,9 +338,9 @@ export function MultiStepRegistrationForm() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Soyisim</FormLabel>
+                        <FormLabel>Lastname</FormLabel>
                         <FormControl>
-                          <Input placeholder="Soyisminiz" {...field} />
+                          <Input placeholder="Lastname" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -355,7 +355,7 @@ export function MultiStepRegistrationForm() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="ornek@okul.edu" {...field} />
+                        <Input type="email" placeholder="ornek@school.edu" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -367,7 +367,7 @@ export function MultiStepRegistrationForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Şifre</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -381,7 +381,7 @@ export function MultiStepRegistrationForm() {
                   name="schoolId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Okul</FormLabel>
+                      <FormLabel>School</FormLabel>
                       <Select 
                         onValueChange={(value) => {
                           field.onChange(value);
@@ -391,7 +391,7 @@ export function MultiStepRegistrationForm() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Okulunuzu seçin" />
+                            <SelectValue placeholder="Select your school" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -423,7 +423,7 @@ export function MultiStepRegistrationForm() {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Programınızı seçin" />
+                            <SelectValue placeholder="Select your program" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -444,11 +444,11 @@ export function MultiStepRegistrationForm() {
                   name="liaId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>LIA Programı</FormLabel>
+                      <FormLabel>LIA Program</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value} disabled={programs.length === 0}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="LIA programınızı seçin" />
+                            <SelectValue placeholder="Select your LIA program" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -474,7 +474,7 @@ export function MultiStepRegistrationForm() {
                     Geri
                   </Button>
                   <Button type="submit" disabled={isLoading} className="flex-1">
-                    {isLoading ? "Kaydediliyor..." : "Kayıt Ol"}
+                    {isLoading ? "Saving..." : "Register"}
                   </Button>
                 </div>
               </form>
@@ -489,9 +489,9 @@ export function MultiStepRegistrationForm() {
                   name="schoolName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Okul Adı</FormLabel>
+                      <FormLabel>School Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Okul adınız" {...field} />
+                        <Input placeholder="School name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -504,9 +504,9 @@ export function MultiStepRegistrationForm() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>İsim</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="İsminiz" {...field} />
+                          <Input placeholder="Name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -517,9 +517,9 @@ export function MultiStepRegistrationForm() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Soyisim</FormLabel>
+                        <FormLabel>Lastname</FormLabel>
                         <FormControl>
-                          <Input placeholder="Soyisminiz" {...field} />
+                          <Input placeholder="Lastname" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -546,7 +546,7 @@ export function MultiStepRegistrationForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Şifre</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -565,7 +565,7 @@ export function MultiStepRegistrationForm() {
                     Geri
                   </Button>
                   <Button type="submit" disabled={isLoading} className="flex-1">
-                    {isLoading ? "Kaydediliyor..." : "Kayıt Ol"}
+                    {isLoading ? "Saving..." : "Register"}
                   </Button>
                 </div>
               </form>
@@ -580,9 +580,9 @@ export function MultiStepRegistrationForm() {
                   name="companyName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Şirket Adı</FormLabel>
+                      <FormLabel>Company Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Şirket adınız" {...field} />
+                        <Input placeholder="Company name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -595,9 +595,9 @@ export function MultiStepRegistrationForm() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>İsim</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="İsminiz" {...field} />
+                          <Input placeholder="Name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -608,9 +608,9 @@ export function MultiStepRegistrationForm() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Soyisim</FormLabel>
+                        <FormLabel>Lastname</FormLabel>
                         <FormControl>
-                          <Input placeholder="Soyisminiz" {...field} />
+                          <Input placeholder="Lastname" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -653,10 +653,10 @@ export function MultiStepRegistrationForm() {
                     onClick={() => setCurrentStep("userType")}
                     className="flex-1"
                   >
-                    Geri
+                    Back
                   </Button>
                   <Button type="submit" disabled={isLoading} className="flex-1">
-                    {isLoading ? "Kaydediliyor..." : "Kayıt Ol"}
+                    {isLoading ? "Saving..." : "Register"}
                   </Button>
                 </div>
               </form>
