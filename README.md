@@ -1,105 +1,72 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# LIA Banken
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+> **This project was developed by Özay Özdemir as a graduation thesis for the Chas Academy Fullstack Developer program.**
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+---
 
-## Features
+## About the Project
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+LIA Banken is a modern web platform designed to streamline the internship (LIA) process for students, schools, and companies. The platform acts as a digital bridge, connecting students seeking internships with educational institutions and employers, and centralizes all application, invitation, and placement workflows.
 
-## Demo
+## Purpose
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+- Students can only register using their school-assigned email addresses
+- Schools can manage education programs and LIA periods
+- Companies can post internship ads, review student profiles, and send invitations
+- All users have role-based, isolated dashboards
 
-## Deploy to Vercel
+## Tech Stack
 
-Vercel deployment will guide you through creating a Supabase account and project.
+- **Frontend:** Next.js (App Router), TypeScript, TailwindCSS, shadcn/ui
+- **Forms:** react-hook-form + zod
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, RLS, Realtime)
+- **API:** @supabase/supabase-js
+- **Deployment:** Vercel
+- **Language:** UI in Swedish, code and database in English
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+---
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+## Features by Role
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### Student
+- Can register only with a school email address
+- Must select school, program, and term during registration
+- Access to student dashboard after email verification
+- Can update profile info (name, phone, city) (school, program, term are read-only)
+- Can create and update their LIA profile (cover letter, CV upload, portfolio/GitHub links, desired position)
+- Can publish their profile to be visible to companies
+- Can apply to company internship postings
+- Can track application statuses (Sent, Rejected, In Process, Accepted)
+- Can receive direct invitations or interview requests from companies
+- Can accept only one offer per term, which marks them as "placed"
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### School
+- Registers with school details and a custom email domain
+- Access to school dashboard after email verification
+- Can update school profile (logo, description, website, student email domains)
+- Can create, update, and delete education programs
+- Can add LIA periods to programs, define start/end dates and student count
+- Can manage active and archived LIA periods
+- Can view all students registered to their school and their statuses (placed, searching, application count)
+- Can only view and manage data related to their own school
 
-## Clone and run locally
+### Company
+- Registers with company name and email
+- Access to company dashboard
+- Can update company profile and contact information
+- Can create, edit, and archive LIA job postings
+- Can review applications and student profiles for their postings
+- Can send direct invitations or schedule interviews with students
+- Can track accepted students and active interns
+- Can add and manage company-specific LIA supervisors (handledare)
+- Can view application and placement statistics
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+---
 
-2. Create a Next.js app using the Supabase Starter template npx command
+## Contribution & Feedback
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+For any contributions, suggestions, or bug reports, please get in touch.
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+---
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
-
-3. Use `cd` to change into the app's directory
-
-   ```bash
-   cd with-supabase-app
-   ```
-
-4. Rename `.env.example` to `.env.local` and update the following:
-
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
-
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
-
-5. You can now run the Next.js local development server:
-
-   ```bash
-   npm run dev
-   ```
-
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
-
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
-
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
-
-## Feedback and issues
-
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+> This project was developed as a graduation thesis for Chas Academy.
