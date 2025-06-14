@@ -15,7 +15,9 @@ export function Header() {
           <Link href={"/"}><Image src="/lia-banken-logo.svg" alt="Logo" width={130} height={28} /></Link>
           <div className="flex items-center gap-2">
             <Link href={"/"}>Home</Link>
-            <Link href={"/dashboard/school"}>School</Link>
+            <Link href={"/dashboard/school"}>School Dashboard</Link>
+            <Link href={"/dashboard/company"}>Company Dashboard</Link>
+            <Link href={"/dashboard/student"}>Student Dashboard</Link>
           </div>
         </div>
         {!hasEnvVars ? <EnvVarWarning /> : <ClientAuthButton />}
