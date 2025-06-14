@@ -1,6 +1,6 @@
 # LIA Banken
 
-> **This project was developed by Özay Özdemir as a graduation thesis for the Chas Academy Fullstack Developer program.**
+> **This project was developed by Özay Özdemir as a graduation thesis for the Chas Academy Frontend Developer program.**
 
 ---
 
@@ -22,7 +22,7 @@ LIA Banken is a modern web platform designed to streamline the internship (LIA) 
 - **Backend:** Supabase (PostgreSQL, Auth, Storage, RLS, Realtime)
 - **API:** @supabase/supabase-js
 - **Deployment:** Vercel
-- **Language:** UI in Swedish, code and database in English
+- **Language:** English, Swedish (planned)
 
 ---
 
@@ -61,12 +61,47 @@ LIA Banken is a modern web platform designed to streamline the internship (LIA) 
 - Can add and manage company-specific LIA supervisors (handledare)
 - Can view application and placement statistics
 
+
+---
+
+## Test the project
+
+You can create a new school, company, and student (student needs approved domain name from school) using the registration form.
+
+https://www.liabanken.se/auth/sign-up
+
+You can also use the following credentials to test the project:
+https://www.liabanken.se/auth/login
+
+### School: 
+
+The Aurora Institute (school name)
+Erik Karlsson (school admin)
+
+- Email: aura@einrot.com
+- Password: testschool03
+
+### Company: 
+
+Aven AB (company name)
+Seth Nordin (company admin)
+- Email: company2@rhyta.com
+- Password: testcompany02
+
+
+### Student: 
+
+Tiffany Williams (student name)
+My Test School (Connected school)
+- Email: student@student.edu
+- Password: testschool03
+
 ---
 
 ## Contribution & Feedback
 
 For any contributions, suggestions, or bug reports, please get in touch.
 
----
+## License
 
-> This project was developed as a graduation thesis for Chas Academy.
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
