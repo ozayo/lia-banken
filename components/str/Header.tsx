@@ -13,11 +13,11 @@ export function Header() {
         <div className="flex gap-5 items-center font-semibold">
 
           <Link href={"/"}><Image src="/lia-banken-logo.svg" alt="Logo" width={130} height={28} /></Link>
-          <div className="flex items-center gap-2">
-            <Link href={"/"}>Home</Link>
-            <Link href={"/dashboard/school"}>School Dashboard</Link>
-            <Link href={"/dashboard/company"}>Company Dashboard</Link>
-            <Link href={"/dashboard/student"}>Student Dashboard</Link>
+          <div className="flex items-center gap-4">
+            <Link className="hover:underline" href={"/"}>Home</Link>
+            <Link className="hover:underline" href={"/dashboard/school"}>School</Link>
+            <Link className="hover:underline" href={"/dashboard/company"}>Company</Link>
+            <Link className="hover:underline" href={"/dashboard/student"}>Student</Link>
           </div>
         </div>
         {!hasEnvVars ? <EnvVarWarning /> : <ClientAuthButton />}
