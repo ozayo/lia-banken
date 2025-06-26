@@ -29,31 +29,31 @@ const userTypeSchema = z.object({
 });
 
 const studentFormSchema = z.object({
-  firstName: z.string().min(2, "İsim en az 2 karakter olmalı"),
-  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalı"),
-  email: z.string().email("Geçerli bir email adresi girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
-  schoolId: z.string().min(1, "Okul seçimi zorunlu"),
-  programId: z.string().min(1, "Program seçimi zorunlu"),
-  liaId: z.string().min(1, "LIA seçimi zorunlu")
+  firstName: z.string().min(2, "Name must be at least 2 characters"),
+  lastName: z.string().min(2, "Lastname must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  schoolId: z.string().min(1, "School selection is required"),
+  programId: z.string().min(1, "Program selection is required"),
+  liaId: z.string().min(1, "LIA selection is required")
 });
 
 const organizationFormSchema = z.object({
-  companyName: z.string().min(2, "Şirket adı en az 2 karakter olmalı"),
-  firstName: z.string().min(2, "İsim en az 2 karakter olmalı"),
-  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalı"),
-  email: z.string().email("Geçerli bir email adresi girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı")
+  companyName: z.string().min(2, "Company name must be at least 2 characters"),
+  firstName: z.string().min(2, "Name must be at least 2 characters"),
+  lastName: z.string().min(2, "Lastname must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters")
 });
 
 const schoolFormSchema = z.object({
   // School admin personal info
-  firstName: z.string().min(2, "İsim en az 2 karakter olmalı"),
-  lastName: z.string().min(2, "Soyisim en az 2 karakter olmalı"),
+  firstName: z.string().min(2, "Name must be at least 2 characters"),
+  lastName: z.string().min(2, "Lastname must be at least 2 characters"),
   // School info  
-  schoolName: z.string().min(2, "Okul adı en az 2 karakter olmalı"),
-  email: z.string().email("Geçerli bir email adresi girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı")
+  schoolName: z.string().min(2, "School name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters")
 });
 
 type UserTypeData = z.infer<typeof userTypeSchema>;
@@ -168,7 +168,7 @@ export function MultiStepRegistrationForm() {
       // Validate email domain
       if (!validateStudentEmail(data.email)) {
         studentForm.setError("email", {
-          message: `Email adresi seçilen okulun domain'i ile eşleşmeli: ${selectedSchool?.allowed_domains.join(", ")}`
+          message: `Email address must match the domain of the selected school: ${selectedSchool?.allowed_domains.join(", ")}`
         });
         setIsLoading(false);
         return;
@@ -310,7 +310,7 @@ export function MultiStepRegistrationForm() {
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Devam Et
+                  Continue
                 </Button>
               </form>
             </Form>
@@ -471,7 +471,7 @@ export function MultiStepRegistrationForm() {
                     onClick={() => setCurrentStep("userType")}
                     className="flex-1"
                   >
-                    Geri
+                    Back
                   </Button>
                   <Button type="submit" disabled={isLoading} className="flex-1">
                     {isLoading ? "Saving..." : "Register"}
